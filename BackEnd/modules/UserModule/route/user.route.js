@@ -1,11 +1,12 @@
 const express = require('express');
 const userController = require('./../controller/user.controller');
 const validateLoginData = require('../../../Validators/loginValidator');
+const validateSignupData = require('../../../Validators/signupValidator');
 const validationMW = require('./../../../MiddleWares/validationMiddleWare');
 const router = express.Router();
 
 router.post("/login", validateLoginData, validationMW, userController.login)
-router.post("/signup", userController.signup)
+router.post("/signup", validateSignupData, validationMW, userController.signup)
 
 router.route("/user")
     .get()

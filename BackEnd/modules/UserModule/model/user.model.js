@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 const bcrypt = require("bcrypt");
-const {validator} = require("express-validator");
+const {isEmail,isMobilePhone} = require("validator");
 
 const userAddress = new mongoose.Schema({
     id: Number,
@@ -23,7 +23,7 @@ const userAddress = new mongoose.Schema({
     mobile: {
         type: String,
         validate(number) {
-            if (!validator.isMobilePhone(number)) {
+            if (!isMobilePhone(number)) {
                 const error = new Error("Phone Number is not valid");
                 error.status = 422;
                 throw error;
@@ -38,19 +38,22 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
+        minLength: 3,
         trim: true
     },
-    secondName: {
+    lastName: {
         type: String,
         required: true,
+        minLength: 3,
         trim: true
     },
     email: {
         type: String,
         required: true,
         lowerCase: true,
+        unique: true,
         validate(email) {
-            if (!validator.isEmail(email)) {
+            if (!isEmail(email)) {
                 const error = new Error("Email is not valid");
                 error.status = 422;
                 throw error;
@@ -70,12 +73,12 @@ const userSchema = new mongoose.Schema({
     address: [userAddress],
     wishlist: [{
         id: mongoose.Schema.Types.ObjectId,
-        ref: "Products"
+        // ref: "Products"
     }]
 }, {timestamps: true});
 
-userSchema.methods.matchPassword = async function(enteredPassword) {
-    return await bcrypt.compare(enteredPassword,this.password);
+userSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
 }
 
 userSchema.pre('save', async function (next) {
