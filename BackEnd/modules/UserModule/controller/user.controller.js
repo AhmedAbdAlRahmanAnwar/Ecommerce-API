@@ -1,5 +1,6 @@
 const User = require('./../model/user.model');
 const generateToken = require('./../../../Utilities/generateJWTtoken');
+const sendWelcomeMail = require('./../../../Utilities/sendMail');
 
 const login = function (request, response, next) {
     const {email, password} = request.body.payload;
@@ -39,6 +40,7 @@ const signup = function (request, response, next) {
                     wishlist: user.wishlist,
                     token
                 });
+                sendWelcomeMail(user.email);
             } else {
                 const error = new Error("Invalid User data");
                 error.status = 400;
