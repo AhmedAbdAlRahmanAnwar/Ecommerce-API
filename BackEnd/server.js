@@ -39,6 +39,6 @@ server.use(notFound);
 //6- Error Middleware
 server.use(errorHandler);
 
-server.listen(PORT, () => {
+server.listen(process.env.PORT || 3000, () => {
     console.log("listening on port " + PORT);
 })
