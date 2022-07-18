@@ -25,6 +25,9 @@ server.use(morgan(':url :method'));
 //4- /************ End Point (Routes) ************/
 server.use(express.json());
 server.use(express.urlencoded({extended: true}));
+server.get("/",(req,res)=>{
+    res.end();
+})
 server.use(userRoute);
 // server.use(productRoute);
 // server.use(orderRoute);
