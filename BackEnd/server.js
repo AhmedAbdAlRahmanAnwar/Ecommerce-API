@@ -11,13 +11,13 @@ const errorHandler = require('./MiddleWares/errorMiddleWare');
 const notFound = require('./MiddleWares/notFoundMiddleWare');
 
 /**********************Development packages***************************/
-const morgan = require('morgan');
+// const morgan = require('morgan');
 
 //1- Connection to DataBase
 require('./Config/dataBaseConnection');
 
 //2- Logging Middleware   /************ Development ***************/
-server.use(morgan(':url :method'));
+// server.use(morgan(':url :method'));
 
 //3- CORS Middleware
 // server.use(cors());
