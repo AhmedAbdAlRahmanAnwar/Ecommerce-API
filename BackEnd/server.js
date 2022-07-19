@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require("express");
 const server = express();
-const PORT = process.env.PORT;
+const cors = require('cors');
+const PORT = process.env.PORT || 3000;
 
 const userRoute = require('./modules/UserModule/route/user.route');
 const productRoute = require('./modules/ProductModule/route/product.route');
@@ -20,7 +21,7 @@ require('./Config/dataBaseConnection');
 // server.use(morgan(':url :method'));
 
 //3- CORS Middleware
-// server.use(cors());
+server.use(cors());
 
 //4- /************ End Point (Routes) ************/
 server.use(express.json());
@@ -39,6 +40,6 @@ server.use(notFound);
 //6- Error Middleware
 server.use(errorHandler);
 
-server.listen(process.env.PORT || 3000, () => {
+server.listen(PORT, () => {
     console.log("listening on port " + PORT);
 })
