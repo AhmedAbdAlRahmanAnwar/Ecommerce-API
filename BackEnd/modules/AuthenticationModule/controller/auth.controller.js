@@ -1,11 +1,6 @@
 const User = require('./../../UserModule/model/user.model');
 const generateAuthToken = require('./../../../Utilities/generateJWTtoken');
-const {
-    sendWelcomeMail,
-    sendForgetPasswordEmail
-}
-    = require('./../../../Utilities/sendMail');
-
+const {sendWelcomeMail, sendForgetPasswordEmail} = require('./../../../Utilities/sendMail');
 
 const login = function (request, response, next) {
     const {email, password} = request.body.payload;
@@ -92,9 +87,34 @@ const resetPassword = (request, response, next) => {
     }
 }
 
+const changePassword = (request, response, next) => {
+    const {oldPassword, newPassword} = request.body.payload;
+    User.findById(request.id)
+        .then(async user => {
+            if (user) {
+                if (await user.matchPassword(oldPassword)) {
+                    user.password = newPassword;
+                    await user.save()
+                        .catch(error => next(error));
+                    response.status(200).json({message: "password updated"})
+                } else {
+                    const error = new Error("Invalid Old Password");
+                    error.status = 400;
+                    next(error);
+                }
+            } else {
+                const error = new Error("User Not Found");
+                error.status = 404;
+                next(error);
+            }
+        })
+        .catch(error => next(error))
+}
+
 module.exports = {
     login,
     signup,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    changePassword
 };
