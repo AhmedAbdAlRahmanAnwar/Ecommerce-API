@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         lowerCase: true,
+        trim: true,
         unique: true,
         validate(email) {
             if (!isEmail(email)) {
@@ -63,8 +64,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minLength: 6,
+        minLength: 8,
+        trim: true,
     },
+    resetPasswordToken: String,
     isAdmin: {
         type: Boolean,
         default: false,
@@ -83,7 +86,7 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 
 userSchema.pre('save', async function (next) {
     if (this.isModified("password")) {
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt(12);
         this.password = await bcrypt.hash(this.password, salt);
     }
     next();

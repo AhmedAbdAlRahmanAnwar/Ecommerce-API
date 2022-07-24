@@ -20,5 +20,5 @@ module.exports = [
         .custom(email => checkIfEmailExists(email)),
     body("payload.password")
         .isString().withMessage("user password should be a string")
-        .isLength({min: 6}).withMessage("user password should has minimum length of 6 characters"),
+        .isLength({min: 8}).withMessage("user password should has minimum length of 8 characters"),
 ]
