@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 const bcrypt = require("bcrypt");
-const {isEmail,isMobilePhone} = require("validator");
+const {isEmail, isMobilePhone} = require("validator");
 
 const userAddress = new mongoose.Schema({
     id: Number,

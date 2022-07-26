@@ -16,6 +16,7 @@ const login = function (request, response, next) {
                     isAdmin: user.isAdmin,
                     address: user.address,
                     wishlist: user.wishlist,
+                    userId:user["_id"],
                     token
                 });
             } else {
@@ -40,6 +41,7 @@ const signup = function (request, response, next) {
                     isAdmin: user.isAdmin,
                     address: user.address,
                     wishlist: user.wishlist,
+                    userId:user["_id"],
                     token
                 });
                 sendWelcomeMail(user.email);
