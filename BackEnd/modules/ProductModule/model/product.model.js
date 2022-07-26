@@ -10,7 +10,9 @@ const reviewSchema = new mongoose.Schema({
     },
     rate: {
         type: Number,
-        required: true
+        required: true,
+        max:5,
+        min:0,
     },
     comment: {
         type: String,
@@ -38,7 +40,8 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     category: {
-        type: mongoose.Schema.Types.ObjectId,
+        type:String
+        // type: mongoose.Schema.Types.ObjectId,
         // ref:"Category",
     },
     quantity: {
@@ -49,6 +52,8 @@ const productSchema = new mongoose.Schema({
     rating: {
         type: Number,
         required: true,
+        max:5,
+        min:0,
         default: 0
     },
     reviews: [reviewSchema],

@@ -33,7 +33,7 @@ server.get("/",(req,res)=>{
 })
 server.use(authRoute);
 server.use(userRoute);
-// server.use(productRoute);
+server.use(productRoute);
 // server.use(orderRoute);
 // server.use(categoryRoute);
 
