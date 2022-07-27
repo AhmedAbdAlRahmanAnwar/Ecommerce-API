@@ -11,14 +11,16 @@ const checkIfEmailExists = email => {
 module.exports = [
     body("payload.firstName")
         .isString().withMessage("First Name should be a string")
-        .isLength({min: 3}).withMessage("First Name should has minimum length of 3 characters"),
+        .matches(/^\w{3,}$/g)
+        .withMessage("First Name should has minimum length of 3 characters"),
     body("payload.lastName")
         .isString().withMessage("Last Name should be a string")
-        .isLength({min: 3}).withMessage("Last Name should has minimum length of 3 characters"),
+        .matches(/^\w{3,}$/g)
+        .withMessage("Last Name should has minimum length of 3 characters"),
     body("payload.email")
         .isEmail().withMessage("Invalid email format")
         .custom(email => checkIfEmailExists(email)),
     body("payload.password")
-        .isString().withMessage("user password should be a string")
-        .isLength({min: 8}).withMessage("user password should has minimum length of 8 characters"),
+        .matches(/^(?=.*([A-Z]){1,})(?=.*[!@#$&*]{1,})(?=.*[0-9]{1,})(?=.*[a-z]{1,}).{8,}$/g)
+        .withMessage("Invalid Password Format")
 ]

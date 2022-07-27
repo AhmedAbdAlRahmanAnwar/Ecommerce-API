@@ -1,7 +1,7 @@
 const JWT = require('jsonwebtoken');
 
-const generateAuthToken = function ({_id, isAdmin}, expire) {
-    return JWT.sign({id: _id, isAdmin},
+const generateAuthToken = function (id, expire) {
+    return JWT.sign({id},
         process.env.JWT_Secret,
         {expiresIn: expire});
 }

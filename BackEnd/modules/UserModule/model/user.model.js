@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        lowerCase: true,
+        lowercase: true,
         trim: true,
         unique: true,
         validate(email) {
@@ -64,7 +64,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minLength: 8,
+        match:/^(?=.*([A-Z]){1,})(?=.*[!@#$&*]{1,})(?=.*[0-9]{1,})(?=.*[a-z]{1,}).{8,}$/,
         trim: true,
     },
     resetPasswordToken: String,
@@ -73,10 +73,14 @@ const userSchema = new mongoose.Schema({
         default: false,
         required: true,
     },
+    isLoggedIn:{
+        type: Boolean,
+        default: false,
+    },
     address: [userAddress],
     wishlist: [{
-        id: mongoose.Schema.Types.ObjectId,
-        // ref: "Products"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Products"
     }]
 }, {timestamps: true});
 

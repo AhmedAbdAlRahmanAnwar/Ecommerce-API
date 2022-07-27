@@ -35,7 +35,7 @@ server.use(authRoute);
 server.use(userRoute);
 server.use(productRoute);
 // server.use(orderRoute);
-// server.use(categoryRoute);
+server.use(categoryRoute);
 
 //5- Not Found Middleware
 server.use(notFound);

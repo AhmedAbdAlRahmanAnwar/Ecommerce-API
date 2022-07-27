@@ -30,23 +30,42 @@ const authResetAction = (request, response, next) => {
     }
 }
 
-const authUser = (request, response, next) => {
-    try{
+const authUser = async (request, response, next) => {
+    try {
         const token = request.header('authorization').split(" ")[1];
         const decodedToken = jwt.verify(token, process.env.JWT_Secret);
-        if (decodedToken?.id === request.body.userId) {
-            request.id = decodedToken.id;
-            next();
-        } else {
-            const error = new Error("Not Authorized");
-            error.status = 403;
-            next(error);
-        }
-    }catch (error) {
+        User.findById(decodedToken.id)
+            .then(user => {
+                if (user) {
+                    if (user.isLoggedIn) {
+                        request.user = user;
+                        next();
+                    } else {
+                        const error = new Error("Not Authorized");
+                        error.status = 403;
+                        next(error);
+                    }
+                } else {
+                    const error = new Error("User Not Found");
+                    error.status = 404;
+                    next(error);
+                }
+            })
+    } catch (error) {
         error.message = "Not Authenticated";
         error.status = 401;
         next(error);
     }
 }
 
-module.exports = {authResetAction, authUser}
+const isAdmin = (request, response, next) => {
+    if (request.user.isAdmin) {
+        next();
+    } else {
+        const error = new Error("Not Authorized");
+        error.status = 403;
+        next(error);
+    }
+}
+
+module.exports = {authResetAction, authUser, isAdmin}
