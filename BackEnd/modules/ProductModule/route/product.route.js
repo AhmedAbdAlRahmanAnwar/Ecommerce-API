@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getAllProducts,createProduct} = require('./../controller/product.controller')
+const {getAllProducts, getProductById, createProduct} = require('./../controller/product.controller')
 
 router.route(["/product","/"])
     .get(getAllProducts)
@@ -8,7 +8,7 @@ router.route(["/product","/"])
     .put()
     .delete()
 
-router.get("/product/:id")
+router.get("/product/:id", getProductById)
 
 router.route("/product/review")
     .post()

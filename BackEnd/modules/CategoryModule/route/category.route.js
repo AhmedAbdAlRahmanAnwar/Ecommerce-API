@@ -5,8 +5,7 @@ const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare')
 
 router.route("/category")
     .get(getAllCategories)
-    // .post(authUser, isAdmin, createCategories)
-    .post( createCategories)
+    .post(authUser, isAdmin, createCategories)
     .put()
     .delete()
 
