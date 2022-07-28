@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const {getAllProducts, getProductById, createProduct} = require('./../controller/product.controller')
+const {getAllProducts, getProductById, createProduct} = require('./../controller/product.controller');
+const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
+const upload = require('./../../../MiddleWares/uploadMiddleWare');
 
-router.route(["/product","/"])
+router.route("/product")
     .get(getAllProducts)
-    .post()
+    .post(authUser, isAdmin, upload.single('image'), createProduct)
     .put()
     .delete()
 

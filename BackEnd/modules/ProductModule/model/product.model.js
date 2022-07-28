@@ -28,6 +28,7 @@ const productSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: true,
+        min:0,
         default: 0,
     },
     description: {
@@ -47,6 +48,7 @@ const productSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         required: true,
+        min:0,
         default: 0,
     },
     rating: {

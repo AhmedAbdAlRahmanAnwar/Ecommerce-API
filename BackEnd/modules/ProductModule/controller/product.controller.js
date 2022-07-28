@@ -1,7 +1,6 @@
 const Product = require('./../model/product.model');
 const asyncHandler = require('express-async-handler');
 
-
 const getAllProducts = asyncHandler(async (request, response) => {
     const page = Math.max(parseInt(request.query.page), 1);
     const pageSize = 10;
@@ -20,9 +19,9 @@ const getAllProducts = asyncHandler(async (request, response) => {
 const getProductById = (request, response, next) => {
     Product.findById(request.params.id)
         .then(product => {
-            if (product){
+            if (product) {
                 response.status(200).json({product});
-            }else{
+            } else {
                 const error = new Error("Product not Found");
                 error.status = 404;
                 next(error);
@@ -36,7 +35,20 @@ const getProductById = (request, response, next) => {
 }
 
 const createProduct = (request, response, next) => {
-
+    if (request.file) {
+        const {name, price, description, modelYear, category, quantity, rating} = request.body;
+        const image = `/${request.file.key}`
+        Product.create({name, price, description, modelYear, category, quantity, rating, image})
+            .then(() => response.status(201).json({message: "product added"}))
+            .catch(error => {
+                error.status = 422;
+                next(error);
+            })
+    } else {
+        const error = new Error("Product Image is required");
+        error.status = 400;
+        next(error);
+    }
 }
 
 module.exports = {
