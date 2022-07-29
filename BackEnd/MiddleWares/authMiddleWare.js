@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('./../modules/UserModule/model/user.model');
+const errorHandler = require('./../Utilities/errorHandler');
 
 const authResetAction = (request, response, next) => {
     try {
@@ -13,20 +14,14 @@ const authResetAction = (request, response, next) => {
                         request.token = token;
                         next();
                     } else {
-                        const error = new Error("invalid email");
-                        error.status = 400;
-                        next(error);
+                        errorHandler("invalid email", 400, next)
                     }
                 } else {
-                    const error = new Error("User Not Found");
-                    error.status = 404;
-                    next(error);
+                    errorHandler("User Not Found", 404, next)
                 }
-            }).catch(error => next(error))
+            }).catch(error => errorHandler(error, 422, next))
     } catch (error) {
-        error.message = "Not Authenticated";
-        error.status = 401;
-        next(error);
+        errorHandler("Not Authenticated", 401, next)
     }
 }
 
@@ -41,31 +36,19 @@ const authUser = async (request, response, next) => {
                         request.user = user;
                         next();
                     } else {
-                        const error = new Error("Not Authorized");
-                        error.status = 403;
-                        next(error);
+                        errorHandler("Not Authorized", 403, next)
                     }
                 } else {
-                    const error = new Error("User Not Found");
-                    error.status = 404;
-                    next(error);
+                    errorHandler("User Not Found", 404, next)
                 }
             })
     } catch (error) {
-        error.message = "Not Authenticated";
-        error.status = 401;
-        next(error);
+        errorHandler("Not Authenticated", 401, next)
     }
 }
 
 const isAdmin = (request, response, next) => {
-    if (request.user.isAdmin) {
-        next();
-    } else {
-        const error = new Error("Not Authorized");
-        error.status = 403;
-        next(error);
-    }
+    request.user.isAdmin ? next() : errorHandler("Not Authorized", 403, next);
 }
 
 module.exports = {authResetAction, authUser, isAdmin}

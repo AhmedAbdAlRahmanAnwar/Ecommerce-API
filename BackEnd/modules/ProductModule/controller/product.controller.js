@@ -1,5 +1,6 @@
 const Product = require('./../model/product.model');
 const asyncHandler = require('express-async-handler');
+const errorHandler = require('./../../../Utilities/errorHandler');
 
 const getAllProducts = asyncHandler(async (request, response) => {
     const page = Math.max(parseInt(request.query.page), 1);
@@ -9,29 +10,20 @@ const getAllProducts = asyncHandler(async (request, response) => {
         .limit(pageSize).skip(pageSize * (page - 1));
     const productCount = await Product.countDocuments();
     const numberOfPages = Math.ceil(productCount / pageSize);
-    response.status(200).json({
-        page,
-        numberOfPages,
-        products
-    });
+    if (products) {
+        response.status(200).json({
+            page,
+            numberOfPages,
+            products
+        });
+    }
 })
 
 const getProductById = (request, response, next) => {
     Product.findById(request.params.id)
-        .then(product => {
-            if (product) {
-                response.status(200).json({product});
-            } else {
-                const error = new Error("Product not Found");
-                error.status = 404;
-                next(error);
-            }
-        })
-        .catch(error => {
-            error.message = "Not Valid Product ID";
-            error.status = 400;
-            next(error);
-        })
+        .then(product => product ? response.status(200).json({product})
+            : errorHandler("Product not Found", 404, next))
+        .catch(error => errorHandler("Not Valid Product ID", 400, next))
 }
 
 const createProduct = (request, response, next) => {
@@ -40,19 +32,29 @@ const createProduct = (request, response, next) => {
         const image = `/${request.file.key}`
         Product.create({name, price, description, modelYear, category, quantity, rating, image})
             .then(() => response.status(201).json({message: "product added"}))
-            .catch(error => {
-                error.status = 422;
-                next(error);
-            })
+            .catch(error => errorHandler(error, 422, next))
     } else {
-        const error = new Error("Product Image is required");
-        error.status = 400;
-        next(error);
+        errorHandler("Product Image is required", 400, next)
     }
+}
+
+const updateProduct = (request, response, next) => {
+
+}
+
+const deleteProduct = (request, response, next) => {
+    Product.findByIdAndDelete(request.body.productId)
+        .then(product => {
+            product ? response.status(200).json({message: "product deleted"})
+                : errorHandler("Product Not Found", 404, next);
+        })
+        .catch(error => errorHandler(error, 422, next))
 }
 
 module.exports = {
     getAllProducts,
     getProductById,
     createProduct,
+    updateProduct,
+    deleteProduct
 }

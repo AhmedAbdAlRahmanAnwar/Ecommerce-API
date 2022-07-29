@@ -5,6 +5,7 @@ const multerS3 = require("multer-s3");
 const {isNumeric, isMongoId, isFloat} = require('validator');
 const {S3Client} = require("@aws-sdk/client-s3");
 const Category = require('./../modules/CategoryModule/model/category.model');
+const errorHandler = require('./../Utilities/errorHandler');
 
 const s3 = new S3Client({
     region: "eu-west-3",
@@ -41,9 +42,7 @@ const productValidator = async (body, cb) => {
         (!category || !isMongoId(category) || !await isCategoryExist(category)) ||
         (!rating || !isFloat(rating, {min: 0, max: 5}))
     ) {
-        const error = new Error("Invalid Product Data");
-        error.status = 422;
-        cb(error);
+        errorHandler("Invalid Product Data", 422, cb)
     }
 }
 
@@ -54,9 +53,7 @@ const fileFilter = async (req, file, cb) => {
         file.mimetype === "image/jpeg") {
         cb(null, true)
     } else {
-        const error = new Error("only png,jpg,jpeg formats allowed");
-        error.status = 400;
-        cb(error);
+        errorHandler("only png,jpg,jpeg formats allowed", 400, cb)
     }
 }
 

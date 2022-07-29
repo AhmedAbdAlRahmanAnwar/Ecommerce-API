@@ -1,6 +1,7 @@
 const User = require('./../../UserModule/model/user.model');
 const generateAuthToken = require('./../../../Utilities/generateJWTtoken');
 const {sendWelcomeMail, sendForgetPasswordEmail} = require('./../../../Utilities/sendMail');
+const errorHandler = require('./../../../Utilities/errorHandler');
 
 const login = function (request, response, next) {
     const {email, password} = request.body.payload;
@@ -23,12 +24,10 @@ const login = function (request, response, next) {
                         });
                     })
             } else {
-                const error = new Error("Invalid email or password");
-                error.status = 401;
-                next(error);
+                errorHandler("Invalid email or password", 401, next)
             }
         })
-        .catch(error => next(error))
+        .catch(error => errorHandler(error, 400, next))
 }
 
 const signup = function (request, response, next) {
@@ -53,11 +52,7 @@ const signup = function (request, response, next) {
                 })
             }
         })
-        .catch(error => {
-            error.message = "Invalid User data";
-            error.status = 422;
-            next(error);
-        })
+        .catch(error => errorHandler(error, 422, next))
 }
 
 const forgetPassword = (request, response, next) => {
@@ -72,12 +67,10 @@ const forgetPassword = (request, response, next) => {
                 user.save();
                 response.status(200).json({message: "Email sent"});
             } else {
-                const error = new Error("User not found");
-                error.status = 404;
-                next(error);
+                errorHandler("User not found", 404, next)
             }
         })
-        .catch(error => next(error))
+        .catch(error => errorHandler(error, 400, next))
 }
 
 const resetPassword = (request, response, next) => {
@@ -87,15 +80,9 @@ const resetPassword = (request, response, next) => {
         user.resetPasswordToken = undefined;
         user.save()
             .then(() => response.status(200).json({message: "success"}))
-            .catch(error => {
-                error.message = "Invalid Password Format";
-                error.status = 422;
-                next(error);
-            });
+            .catch(error => errorHandler("Invalid Password Format", 422, next));
     } else {
-        const error = new Error("Invalid Link");
-        error.status = 400;
-        next(error);
+        errorHandler("Invalid Link", 400, next);
     }
 }
 
@@ -107,15 +94,9 @@ const changePassword = async (request, response, next) => {
         user.password = newPassword;
         user.save()
             .then(() => response.status(200).json({message: "password updated"}))
-            .catch(error => {
-                error.message = "Invalid Password Format";
-                error.status = 422;
-                next(error);
-            })
+            .catch(error => errorHandler("Invalid Password Format", 422, next))
     } else {
-        const error = new Error("Invalid Old Password");
-        error.status = 400;
-        next(error);
+        errorHandler("Invalid Old Password", 400, next)
     }
 }
 
