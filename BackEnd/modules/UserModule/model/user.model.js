@@ -25,7 +25,6 @@ const userAddress = new mongoose.Schema({
         validate(number) {
             if (!isMobilePhone(number)) {
                 const error = new Error("Phone Number is not valid");
-                error.status = 422;
                 throw error;
             }
         }
@@ -56,7 +55,6 @@ const userSchema = new mongoose.Schema({
         validate(email) {
             if (!isEmail(email)) {
                 const error = new Error("Email is not valid");
-                error.status = 422;
                 throw error;
             }
         }

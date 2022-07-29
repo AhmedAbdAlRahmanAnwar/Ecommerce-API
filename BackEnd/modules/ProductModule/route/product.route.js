@@ -1,13 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const {getAllProducts, getProductById, createProduct, updateProduct, deleteProduct} = require('./../controller/product.controller');
 const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
 const upload = require('./../../../MiddleWares/uploadMiddleWare');
+const productValidator = require('./../../../Validators/productDetailsValidator');
+const validationMW = require('./../../../MiddleWares/validationMiddleWare')
+const {getAllProducts, getProductById, createProduct, updateProductDetails, updateProductImage, deleteProduct}
+    = require('./../controller/product.controller');
 
 router.route("/product")
     .get(getAllProducts)
     .post(authUser, isAdmin, upload.single('image'), createProduct)
-    .put(authUser, isAdmin, updateProduct)
+    .put(authUser, isAdmin, productValidator, validationMW, updateProductDetails)
+    .patch(authUser, isAdmin, updateProductImage)
     .delete(authUser, isAdmin, deleteProduct)
 
 router.get("/product/:id", getProductById)

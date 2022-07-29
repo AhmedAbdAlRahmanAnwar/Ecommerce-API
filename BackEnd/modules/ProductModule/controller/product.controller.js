@@ -38,7 +38,19 @@ const createProduct = (request, response, next) => {
     }
 }
 
-const updateProduct = (request, response, next) => {
+const updateProductDetails = (request, response, next) => {
+    if("image" in request.body.payload || "rating" in request.body.payload){
+        errorHandler("not allowed updates", 400, next)
+    }else{
+        Product.findByIdAndUpdate(request.body.productId, request.body.payload, {runValidators: true})
+            .then(product => {
+                product ? response.status(200).json({message: "updated"}) : errorHandler("Product not found", 404, next)
+            })
+            .catch(error => errorHandler(error, 422, next))
+    }
+}
+
+const updateProductImage = (request, response, next) => {
 
 }
 
@@ -55,6 +67,7 @@ module.exports = {
     getAllProducts,
     getProductById,
     createProduct,
-    updateProduct,
+    updateProductDetails,
+    updateProductImage,
     deleteProduct
 }

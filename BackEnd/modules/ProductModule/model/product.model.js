@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const {isNumeric} = require('validator')
 const reviewSchema = new mongoose.Schema({
     userName: {
         type: String,
@@ -23,7 +23,12 @@ const reviewSchema = new mongoose.Schema({
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        validate(name) {
+            if (isNumeric(name)) {
+                throw new Error("product name should be a string");
+            }
+        }
     },
     price: {
         type: Number,
@@ -33,9 +38,18 @@ const productSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        required: true,
+        validate(description) {
+            if (isNumeric(description)) {
+                throw new Error("product description should be a string");
+            }
+        }
     },
-    modelYear: Number,
+    modelYear: {
+        type: Number,
+        min: 0,
+        max: new Date().getFullYear(),
+    },
     image: {
         type: String,
         required: true
