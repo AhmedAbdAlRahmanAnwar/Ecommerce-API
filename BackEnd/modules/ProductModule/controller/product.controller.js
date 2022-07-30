@@ -23,7 +23,7 @@ const getProductById = (request, response, next) => {
     Product.findById(request.params.id)
         .then(product => product ? response.status(200).json({product})
             : errorHandler("Product not Found", 404, next))
-        .catch(() => errorHandler("Not Valid Product ID", 400, next))
+        .catch(() => errorHandler("Not Valid Product ID", 422, next))
 }
 
 const createProduct = (request, response, next) => {
