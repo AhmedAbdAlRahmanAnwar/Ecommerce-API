@@ -11,10 +11,10 @@ router.route("/product")
     .get(getAllProducts)
     .post(authUser, isAdmin, upload.single('image'), createProduct)
     .put(authUser, isAdmin, productValidator, validationMW, updateProductDetails)
-    .patch(authUser, isAdmin, updateProductImage)
     .delete(authUser, isAdmin, deleteProduct)
 
 router.get("/product/:id", getProductById)
+router.patch("/product/image", authUser, isAdmin, upload.single('image'), updateProductImage)
 
 router.route("/product/review")
     .post()

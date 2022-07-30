@@ -2,10 +2,11 @@ const path = require("path");
 const uuid = require("uuid").v4;
 const multer = require("multer");
 const multerS3 = require("multer-s3");
-const {isNumeric, isMongoId, isFloat} = require('validator');
-const {S3Client} = require("@aws-sdk/client-s3");
-const Category = require('./../modules/CategoryModule/model/category.model');
+const {S3Client, DeleteObjectCommand} = require("@aws-sdk/client-s3");
 const errorHandler = require('./../Utilities/errorHandler');
+const {isNumeric, isMongoId, isFloat} = require('validator');
+const Category = require('./../modules/CategoryModule/model/category.model');
+const Product = require('./../modules/ProductModule/model/product.model');
 
 const s3 = new S3Client({
     region: "eu-west-3",
@@ -14,18 +15,6 @@ const s3 = new S3Client({
         secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
     },
 });
-
-const storage = multerS3({
-    s3,
-    bucket: "bazaarshop",
-    metadata: (req, file, cb) => {
-        cb(null, {fieldName: file.fieldname});
-    },
-    key: (req, file, cb) => {
-        const extension = path.extname(file.originalname);
-        cb(null, `${uuid()}${extension}`);
-    },
-})
 
 const isCategoryExist = (categoryId) => {
     return Category.findById(categoryId);
@@ -42,20 +31,52 @@ const productValidator = async (body, cb) => {
         (!category || !isMongoId(category) || !await isCategoryExist(category)) ||
         (!rating || !isFloat(rating, {min: 0, max: 5}))
     ) {
-        errorHandler("Invalid Product Data", 422, cb)
+        errorHandler("Invalid Product Data", 422, cb);
+    } else {
+        cb(null, true);
     }
 }
 
+const isProductExists = (productId, cb) => {
+    Product.findById(productId)
+        .then(product => {
+            if (product) {
+                //Delete old image from Amazon S3 Storage
+                const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
+                s3.send(new DeleteObjectCommand(bucketParams))
+                    .then(() => cb(null, true))
+                    .catch(error => errorHandler(error, 500, cb))
+            } else {
+                errorHandler("Product not found", 404, cb)
+            }
+        })
+        .catch(() => errorHandler("invalid product ID", 422, cb))
+}
+
 const fileFilter = async (req, file, cb) => {
-    await productValidator(req.body, cb);
+
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
-        cb(null, true)
+        //Check if product is created or updated
+        !("productId" in req.body) ? await productValidator(req.body, cb)
+            : isProductExists(req.body.productId, cb)
     } else {
-        errorHandler("only png,jpg,jpeg formats allowed", 400, cb)
+        errorHandler("only png,jpg,jpeg formats allowed", 400, cb);
     }
 }
+
+const storage = multerS3({
+    s3,
+    bucket: "bazaarshop",
+    metadata: (req, file, cb) => {
+        cb(null, {fieldName: file.fieldname});
+    },
+    key: (req, file, cb) => {
+        const extension = path.extname(file.originalname);
+        cb(null, `${uuid()}${extension}`);
+    },
+})
 
 const maxSize = 10 * 1000 * 1000;
 const upload = multer({storage, fileFilter, limits: {fileSize: maxSize}})

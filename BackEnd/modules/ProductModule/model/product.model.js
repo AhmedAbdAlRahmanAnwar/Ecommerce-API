@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const {isNumeric} = require('validator')
+const {isNumeric} = require('validator');
+
 const reviewSchema = new mongoose.Schema({
     userName: {
         type: String,

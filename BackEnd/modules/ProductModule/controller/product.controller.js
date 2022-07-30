@@ -23,7 +23,7 @@ const getProductById = (request, response, next) => {
     Product.findById(request.params.id)
         .then(product => product ? response.status(200).json({product})
             : errorHandler("Product not Found", 404, next))
-        .catch(error => errorHandler("Not Valid Product ID", 400, next))
+        .catch(() => errorHandler("Not Valid Product ID", 400, next))
 }
 
 const createProduct = (request, response, next) => {
@@ -31,7 +31,7 @@ const createProduct = (request, response, next) => {
         const {name, price, description, modelYear, category, quantity, rating} = request.body;
         const image = `/${request.file.key}`
         Product.create({name, price, description, modelYear, category, quantity, rating, image})
-            .then(() => response.status(201).json({message: "product added"}))
+            .then(product => response.status(201).json({product}))
             .catch(error => errorHandler(error, 422, next))
     } else {
         errorHandler("Product Image is required", 400, next)
@@ -39,19 +39,27 @@ const createProduct = (request, response, next) => {
 }
 
 const updateProductDetails = (request, response, next) => {
-    if("image" in request.body.payload || "rating" in request.body.payload){
+    if ("image" in request.body.payload || "rating" in request.body.payload) {
         errorHandler("not allowed updates", 400, next)
-    }else{
+    } else {
         Product.findByIdAndUpdate(request.body.productId, request.body.payload, {runValidators: true})
             .then(product => {
-                product ? response.status(200).json({message: "updated"}) : errorHandler("Product not found", 404, next)
+                product ? response.status(200).json({product})
+                    : errorHandler("Product not found", 404, next)
             })
             .catch(error => errorHandler(error, 422, next))
     }
 }
 
 const updateProductImage = (request, response, next) => {
-
+    if (request.file) {
+        const image = {image: `/${request.file.key}`};
+        Product.findByIdAndUpdate(request.body.productId, image)
+            .then(product => response.status(200).json({product}))
+            .catch(error => errorHandler(error, 422, next))
+    } else {
+        errorHandler("Product Image is required", 400, next);
+    }
 }
 
 const deleteProduct = (request, response, next) => {
