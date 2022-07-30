@@ -47,7 +47,7 @@ const updateProductDetails = (request, response, next) => {
                 product ? response.status(200).json({product})
                     : errorHandler("Product not found", 404, next)
             })
-            .catch(error => errorHandler(error, 422, next))
+            .catch(() => errorHandler("Invalid Product Id", 422, next))
     }
 }
 
@@ -56,7 +56,7 @@ const updateProductImage = (request, response, next) => {
         const image = {image: `/${request.file.key}`};
         Product.findByIdAndUpdate(request.body.productId, image)
             .then(product => response.status(200).json({product}))
-            .catch(error => errorHandler(error, 422, next))
+            .catch(() => errorHandler("Invalid Product Id", 422, next))
     } else {
         errorHandler("Product Image is required", 400, next);
     }
@@ -68,7 +68,7 @@ const deleteProduct = (request, response, next) => {
             product ? response.status(200).json({message: "product deleted"})
                 : errorHandler("Product Not Found", 404, next);
         })
-        .catch(error => errorHandler(error, 422, next))
+        .catch(() => errorHandler("Invalid Product Id", 422, next))
 }
 
 module.exports = {
