@@ -44,7 +44,7 @@ const updateProductDetails = (request, response, next) => {
     } else {
         Product.findByIdAndUpdate(request.body.productId, request.body.payload, {runValidators: true})
             .then(product => {
-                product ? response.status(200).json({product})
+                product ? response.status(200).json({message: "product details updated"})
                     : errorHandler("Product not found", 404, next)
             })
             .catch(() => errorHandler("Invalid Product Id", 422, next))
@@ -55,7 +55,7 @@ const updateProductImage = (request, response, next) => {
     if (request.file) {
         const image = {image: `/${request.file.key}`};
         Product.findByIdAndUpdate(request.body.productId, image)
-            .then(product => response.status(200).json({product}))
+            .then(() => response.status(200).json({message: "product image updated"}))
             .catch(() => errorHandler("Invalid Product Id", 422, next))
     } else {
         errorHandler("Product Image is required", 400, next);

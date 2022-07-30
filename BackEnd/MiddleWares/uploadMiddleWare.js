@@ -37,17 +37,20 @@ const productValidator = async (body, cb) => {
     }
 }
 
+const deleteOldImage = (product, cb) => {
+    const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
+    s3.send(new DeleteObjectCommand(bucketParams))
+        .then(() => cb(null, true))
+        .catch(error => errorHandler(error, 500, cb))
+}
+
 const isProductExists = (productId, cb) => {
     Product.findById(productId)
         .then(product => {
             if (product) {
-                //Delete old image from Amazon S3 Storage
-                const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
-                s3.send(new DeleteObjectCommand(bucketParams))
-                    .then(() => cb(null, true))
-                    .catch(error => errorHandler(error, 500, cb))
+                deleteOldImage(product, cb);
             } else {
-                errorHandler("Product not found", 404, cb)
+                errorHandler("Product not found", 404, cb);
             }
         })
         .catch(() => errorHandler("invalid product ID", 422, cb))
