@@ -56,14 +56,14 @@ const isProductExists = (productId, cb) => {
         .catch(() => errorHandler("invalid product ID", 422, cb))
 }
 
-const fileFilter = async (req, file, cb) => {
+const fileFilter =  (req, file, cb) => {
 
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
         //Check if product is created or updated
-         productValidator(req.body, cb)
-        // cb(null, true);
+        //  productValidator(req.body, cb)
+        cb(null, true);
         // !("productId" in req.body) ? await productValidator(req.body, cb)
         //     : isProductExists(req.body.productId, cb)
     } else {
