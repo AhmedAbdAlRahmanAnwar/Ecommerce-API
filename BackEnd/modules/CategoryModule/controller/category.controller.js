@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const errorHandler = require('./../../../Utilities/errorHandler');
 
 const getAllCategories = asyncHandler(async (request, response) => {
-    const categories = await Category.find().select("categoryName -_id");
+    const categories = await Category.find().select("categoryName _id");
     if (categories) {
         response.status(200).json({categories});
     } else {

@@ -58,6 +58,7 @@ const isProductExists = (productId, cb) => {
 
 const fileFilter = async (req, file, cb) => {
 
+        console.log("dvdfvdd")
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {

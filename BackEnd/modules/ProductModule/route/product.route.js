@@ -4,7 +4,15 @@ const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
 const upload = require('./../../../MiddleWares/uploadMiddleWare');
 const productValidator = require('./../../../Validators/productDetailsValidator');
 const validationMW = require('./../../../MiddleWares/validationMiddleWare')
-const {getAllProducts, getProductById, createProduct, updateProductDetails, updateProductImage, deleteProduct}
+const {
+    getAllProducts,
+    getProductById,
+    createProduct,
+    updateProductDetails,
+    updateProductImage,
+    deleteProduct,
+    getProductsByCategory
+}
     = require('./../controller/product.controller');
 
 router.route("/product")
@@ -13,6 +21,8 @@ router.route("/product")
     .put(authUser, isAdmin, productValidator, validationMW, updateProductDetails)
     .delete(authUser, isAdmin, deleteProduct)
 
+
+router.get("/product/category", getProductsByCategory)
 router.get("/product/:id", getProductById)
 router.patch("/product/image", authUser, isAdmin, upload.single('image'), updateProductImage)
 
@@ -20,6 +30,5 @@ router.route("/product/review")
     .post()
     .delete()
 
-router.get("/product/category/:categoryName")
 
 module.exports = router;

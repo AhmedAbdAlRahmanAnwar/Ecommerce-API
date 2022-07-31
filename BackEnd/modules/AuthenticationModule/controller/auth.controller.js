@@ -80,7 +80,7 @@ const resetPassword = (request, response, next) => {
         user.resetPasswordToken = undefined;
         user.save()
             .then(() => response.status(200).json({message: "success"}))
-            .catch(error => errorHandler("Invalid Password Format", 422, next));
+            .catch(() => errorHandler("Invalid Password Format", 422, next));
     } else {
         errorHandler("Invalid Link", 400, next);
     }
@@ -94,7 +94,7 @@ const changePassword = async (request, response, next) => {
         user.password = newPassword;
         user.save()
             .then(() => response.status(200).json({message: "password updated"}))
-            .catch(error => errorHandler("Invalid Password Format", 422, next))
+            .catch(() => errorHandler("Invalid Password Format", 422, next))
     } else {
         errorHandler("Invalid Old Password", 400, next)
     }

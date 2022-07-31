@@ -27,6 +27,7 @@ const getProductById = (request, response, next) => {
 }
 
 const createProduct = (request, response, next) => {
+    console.log(request.file)
     if (request.file) {
         const {name, price, description, modelYear, category, quantity, rating} = request.body;
         const image = `/${request.file.key}`
@@ -71,11 +72,38 @@ const deleteProduct = (request, response, next) => {
         .catch(() => errorHandler("Invalid Product Id", 422, next))
 }
 
+const getProductsByCategory = async (request, response, next) => {
+    // const category = request.query.categoryName;
+    // const products = await Product.aggregate([
+    //
+    //     {
+    //         $lookup: {
+    //             from: 'categories',
+    //             localField: 'category',
+    //             foreignField: '_id',
+    //             as: 'category'
+    //         }
+    //     }
+    //     ,
+        // {
+        //     $unwind: '$category'
+        // }
+
+        // {
+        //     $match:{"category.categoryName" : request.query.categoryName}
+        // },
+    // ])
+    // response.json({products})
+    // .then()
+    //     .catch()
+}
+
 module.exports = {
     getAllProducts,
     getProductById,
     createProduct,
     updateProductDetails,
     updateProductImage,
-    deleteProduct
+    deleteProduct,
+    getProductsByCategory
 }
