@@ -72,7 +72,8 @@ const fileFilter = (req, file, cb) => {
                 (!category || !isMongoId(category)) ||
                 (!rating || !isFloat(rating, {min: 0, max: 5}))
             ) {
-                errorHandler("Invalid Product Data", 422, cb);
+                cb(new Error("Invalid Product Data"))
+                // errorHandler("Invalid Product Data", 422, cb);
             } else {
                 cb(null, true);
             }
