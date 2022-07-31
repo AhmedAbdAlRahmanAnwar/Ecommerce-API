@@ -19,8 +19,8 @@ const s3 = new S3Client({
 const isCategoryExist = (categoryId) => {
     return Category.findById(categoryId);
 }
-
-const productValidator = async (body, cb) => {
+// (!category || !isMongoId(category) || !await isCategoryExist(category)) ||
+const productValidator =  (body, cb) => {
     const {name, price, description, category, modelYear, quantity, rating} = body;
 
     if ((!name || isNumeric(name)) ||
@@ -28,7 +28,7 @@ const productValidator = async (body, cb) => {
         (!price || !isNumeric(price) || price < 0) ||
         (!quantity || !isNumeric(quantity) || quantity < 0) ||
         (modelYear ? (!isNumeric(modelYear) || modelYear < 0) : false) ||
-        (!category || !isMongoId(category) || !await isCategoryExist(category)) ||
+        (!category || !isMongoId(category) )||
         (!rating || !isFloat(rating, {min: 0, max: 5}))
     ) {
         errorHandler("Invalid Product Data", 422, cb);
@@ -62,7 +62,8 @@ const fileFilter = async (req, file, cb) => {
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
         //Check if product is created or updated
-        await productValidator(req.body, cb)
+         productValidator(req.body, cb)
+        // cb(null, true);
         // !("productId" in req.body) ? await productValidator(req.body, cb)
         //     : isProductExists(req.body.productId, cb)
     } else {
