@@ -22,7 +22,9 @@ require('./Config/dataBaseConnection');
 // server.use(morgan(':url :method'));
 
 //3- CORS Middleware
-server.use(cors(process.env.CLIENT));
+server.use(cors({
+    origin:process.env.CLIENT
+}));
 
 //4- /************ End Point (Routes) ************/
 server.use(express.json());

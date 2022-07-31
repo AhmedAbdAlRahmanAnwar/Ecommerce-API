@@ -27,7 +27,6 @@ const getProductById = (request, response, next) => {
 }
 
 const createProduct = (request, response, next) => {
-    console.log(request.file)
     if (request.file) {
         const {name, price, description, modelYear, category, quantity, rating} = request.body;
         const image = `/${request.file.key}`
