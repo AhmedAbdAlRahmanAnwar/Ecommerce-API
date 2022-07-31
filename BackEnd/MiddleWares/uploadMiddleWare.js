@@ -62,8 +62,9 @@ const fileFilter = async (req, file, cb) => {
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
         //Check if product is created or updated
-        !("productId" in req.body) ? await productValidator(req.body, cb)
-            : isProductExists(req.body.productId, cb)
+        await productValidator(req.body, cb)
+        // !("productId" in req.body) ? await productValidator(req.body, cb)
+        //     : isProductExists(req.body.productId, cb)
     } else {
         errorHandler("only png,jpg,jpeg formats allowed", 400, cb);
     }
