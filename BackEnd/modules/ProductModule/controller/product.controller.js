@@ -27,6 +27,8 @@ const getProductById = (request, response, next) => {
 }
 
 const createProduct = (request, response, next) => {
+    console.log(request.file)
+    console.log(request.body)
     if (request.file) {
         const {name, price, description, modelYear, category, quantity, rating} = request.body;
         const image = `/${request.file.key}`
@@ -34,7 +36,7 @@ const createProduct = (request, response, next) => {
             .then(product => response.status(201).json({product}))
             .catch(error => errorHandler(error, 422, next))
     } else {
-        errorHandler("Product Image is required", 400, next)
+        errorHandler("Invalid Image format , Invalid Data", 400, next)
     }
 }
 
