@@ -84,13 +84,13 @@ const getProductsByCategory = async (request, response, next) => {
     //         }
     //     }
     //     ,
-        // {
-        //     $unwind: '$category'
-        // }
+    // {
+    //     $unwind: '$category'
+    // }
 
-        // {
-        //     $match:{"category.categoryName" : request.query.categoryName}
-        // },
+    // {
+    //     $match:{"category.categoryName" : request.query.categoryName}
+    // },
     // ])
     // response.json({products})
     // .then()

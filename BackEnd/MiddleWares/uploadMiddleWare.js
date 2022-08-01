@@ -32,7 +32,7 @@ const productValidator =  (req, file, cb) => {
         (!rating || !isFloat(rating, {min: 0, max: 5}))
     ) {
         // errorHandler("Invalid Product Data", 422, cb);
-        cb(new Error("Invalid Product Data"),true);
+        cb("Invalid Product Data",false);
         // cb(null, false);
     }
     else {
@@ -83,7 +83,7 @@ const fileFilter = (req, file, cb) => {
         // }else{
         //     isProductExists(req.body.productId, cb)
         // }
-        console.log("valid");
+        // console.log("valid");
         // cb(null, true);
         // !("productId" in req.body) ? await productValidator(req.body, cb)
         //     : isProductExists(req.body.productId, cb)
