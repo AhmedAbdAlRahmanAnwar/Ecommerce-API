@@ -89,8 +89,8 @@ const fileFilter = (req, file, cb) => {
         // !("productId" in req.body) ? await productValidator(req.body, cb)
         //     : isProductExists(req.body.productId, cb)
     } else {
-        const error = new Error("only png,jpg,jpeg formats allowed");
-        cb(error);
+        // const error = new Error("only png,jpg,jpeg formats allowed");
+        cb(null , false);
         // errorHandler("only png,jpg,jpeg formats allowed", 400, cb);
     }
 }
