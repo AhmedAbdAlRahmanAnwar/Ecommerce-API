@@ -20,8 +20,8 @@ const isCategoryExist = (categoryId) => {
     return Category.findById(categoryId);
 }
 // (!category || !isMongoId(category) || !await isCategoryExist(category)) ||
-/*const productValidator =  (body, cb) => {
-    const {name, price, description, category, modelYear, quantity, rating} = body;
+const productValidator =  (req, file, cb) => {
+    const {name, price, description, category, modelYear, quantity, rating} = req.body;
 
     if ((!name || isNumeric(name)) ||
         (!description || isNumeric(description)) ||
@@ -32,10 +32,11 @@ const isCategoryExist = (categoryId) => {
         (!rating || !isFloat(rating, {min: 0, max: 5}))
     ) {
         errorHandler("Invalid Product Data", 422, cb);
-    } else {
+    }
+    else {
         cb(null, true);
     }
-}*/
+}
 
 const deleteOldImage = (product, cb) => {
     const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
@@ -57,29 +58,29 @@ const isProductExists = (productId, cb) => {
 }
 
 const fileFilter = (req, file, cb) => {
-    const {name, price, description, category, modelYear, quantity, rating} = req.body;
+    // const {name, price, description, category, modelYear, quantity, rating} = req.body;
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
+         productValidator(req, file, cb)
         //Check if product is created or updated
-        //  productValidator(req.body, cb)
-        if(!("productId" in req.body)){
-            if ((!name || isNumeric(name)) ||
-                (!description || isNumeric(description)) ||
-                (!price || !isNumeric(price) || price < 0) ||
-                (!quantity || !isNumeric(quantity) || quantity < 0) ||
-                (modelYear ? (!isNumeric(modelYear) || modelYear < 0) : false) ||
-                (!category || !isMongoId(category)) ||
-                (!rating || !isFloat(rating, {min: 0, max: 5}))
-            ) {
-                cb(new Error("Invalid Product Data"))
-                // errorHandler("Invalid Product Data", 422, cb);
-            } else {
-                cb(null, true);
-            }
-        }else{
-            isProductExists(req.body.productId, cb)
-        }
+        // if(!("productId" in req.body)){
+        //     if ((!name || isNumeric(name)) ||
+        //         (!description || isNumeric(description)) ||
+        //         (!price || !isNumeric(price) || price < 0) ||
+        //         (!quantity || !isNumeric(quantity) || quantity < 0) ||
+        //         (modelYear ? (!isNumeric(modelYear) || modelYear < 0) : false) ||
+        //         (!category || !isMongoId(category)) ||
+        //         (!rating || !isFloat(rating, {min: 0, max: 5}))
+        //     ) {
+        //         cb(new Error("Invalid Product Data"))
+        //         // errorHandler("Invalid Product Data", 422, cb);
+        //     } else {
+        //         cb(null, true);
+        //     }
+        // }else{
+        //     isProductExists(req.body.productId, cb)
+        // }
 
         // cb(null, true);
         // !("productId" in req.body) ? await productValidator(req.body, cb)

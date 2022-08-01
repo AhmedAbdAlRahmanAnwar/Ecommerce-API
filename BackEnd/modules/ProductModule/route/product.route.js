@@ -17,10 +17,9 @@ const {
 
 router.route("/product")
     .get(getAllProducts)
-    .post(authUser, isAdmin, upload.single('image'), createProduct)
     .put(authUser, isAdmin, productValidator, validationMW, updateProductDetails)
+    .post(authUser, isAdmin, upload.single('image'), createProduct)
     .delete(authUser, isAdmin, deleteProduct)
-
 
 router.get("/product/category", getProductsByCategory)
 router.get("/product/:id", getProductById)
