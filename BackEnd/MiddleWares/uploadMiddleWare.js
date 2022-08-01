@@ -24,7 +24,7 @@ const isCategoryExist = (categoryId) => {
     return Category.findById(categoryId);
 }
 // (!category || !isMongoId(category) || !await isCategoryExist(category)) ||
-const productValidator =  (req, file, cb) => {
+const productValidator =  async (req, file, cb) => {
     const {name, price, description, category, modelYear, quantity, rating} = req.body;
 
     if ((!name || isNumeric(name)) ||
@@ -32,7 +32,7 @@ const productValidator =  (req, file, cb) => {
         (!price || !isNumeric(price) || price < 0) ||
         (!quantity || !isNumeric(quantity) || quantity < 0) ||
         (modelYear ? (!isNumeric(modelYear) || modelYear < 0) : false) ||
-        (!category || !isMongoId(category) )||
+        (!category || !isMongoId(category) || !await isCategoryExist(category))||
         (!rating || !isFloat(rating, {min: 0, max: 5}))
     ) {
         // errorHandler("Invalid Product Data", 422, cb);
@@ -64,12 +64,12 @@ const isProductExists = (productId, cb) => {
         .catch(() => errorHandler("invalid product ID", 422, cb))
 }
 
-const fileFilter = asyncHandler( (req, file, cb) => {
+const fileFilter = asyncHandler( async (req, file, cb) => {
     // const {name, price, description, category, modelYear, quantity, rating} = req.body;
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
-        productValidator(req, file, cb);
+        await productValidator(req, file, cb);
         //Check if product is created or updated
         // if(!("productId" in req.body)){
         //     if ((!name || isNumeric(name)) ||
@@ -93,8 +93,8 @@ const fileFilter = asyncHandler( (req, file, cb) => {
         // !("productId" in req.body) ? await productValidator(req.body, cb)
         //     : isProductExists(req.body.productId, cb)
     } else {
-        const error = new Error("only png,jpg,jpeg formats allowed");
-        cb(error , false);
+        // const error = new Error("only png,jpg,jpeg formats allowed");
+        cb(null, false);
         // errorHandler("only png,jpg,jpeg formats allowed", 400, cb);
     }
 })
