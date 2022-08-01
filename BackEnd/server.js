@@ -22,7 +22,8 @@ require('./Config/dataBaseConnection');
 // server.use(morgan(':url :method'));
 
 //3- CORS Middleware
-server.use(cors(['https://bazaar-shop-api.herokuapp.com','http://localhost:3000']));
+// server.use(cors(['https://bazaar-shop-api.herokuapp.com','http://localhost:3000']));
+server.use(cors());
 
 //4- /************ End Point (Routes) ************/
 server.use(express.json());
