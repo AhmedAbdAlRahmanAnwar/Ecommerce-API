@@ -32,7 +32,7 @@ const productValidator =  (req, file, cb) => {
         (!rating || !isFloat(rating, {min: 0, max: 5}))
     ) {
         // errorHandler("Invalid Product Data", 422, cb);
-        cb("Invalid Product Data",false);
+        cb(null,false);
         // cb(null, false);
     }
     else {
