@@ -81,7 +81,7 @@ const fileFilter = (req, file, cb) => {
         // }else{
         //     isProductExists(req.body.productId, cb)
         // }
-
+        console.log("valid");
         // cb(null, true);
         // !("productId" in req.body) ? await productValidator(req.body, cb)
         //     : isProductExists(req.body.productId, cb)
