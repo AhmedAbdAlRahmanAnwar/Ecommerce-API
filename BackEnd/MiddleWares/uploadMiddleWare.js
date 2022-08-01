@@ -33,7 +33,6 @@ const productValidator =  (req, file, cb) => {
     ) {
         // errorHandler("Invalid Product Data", 422, cb);
         const error = new Error("Invalid Product Data");
-        error.status = 422;
         cb(error,false);
         // cb(null, false);
     }
