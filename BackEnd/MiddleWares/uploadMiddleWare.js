@@ -90,7 +90,7 @@ const fileFilter = (req, file, cb) => {
         //     : isProductExists(req.body.productId, cb)
     } else {
         const error = new Error("only png,jpg,jpeg formats allowed");
-        cb(error,false);
+        cb(error);
         // errorHandler("only png,jpg,jpeg formats allowed", 400, cb);
     }
 }
