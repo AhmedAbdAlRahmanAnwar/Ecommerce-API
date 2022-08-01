@@ -34,7 +34,7 @@ const createProduct = (request, response, next) => {
             .then(product => response.status(201).json({product}))
             .catch(error => errorHandler(error, 422, next))
     } else {
-        errorHandler("Invalid Image format , Invalid Data", 400, next)
+        errorHandler("Invalid Image format , Invalid Data", 422, next)
     }
 }
 
@@ -58,7 +58,7 @@ const updateProductImage = (request, response, next) => {
             .then(() => response.status(200).json({message: "product image updated"}))
             .catch(() => errorHandler("Invalid Product Id", 422, next))
     } else {
-        errorHandler("Product Image is required", 400, next);
+        errorHandler("Invalid Update Error", 400, next);
     }
 }
 
