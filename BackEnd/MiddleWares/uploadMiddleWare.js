@@ -32,7 +32,8 @@ const productValidator =  (req, file, cb) => {
         (!rating || !isFloat(rating, {min: 0, max: 5}))
     ) {
         // errorHandler("Invalid Product Data", 422, cb);
-        cb(new Error("Invalid Product Data"));
+        // cb(new Error("Invalid Product Data"));
+        cb(null, false);
     }
     else {
         cb(null, true);
@@ -63,7 +64,7 @@ const fileFilter = (req, file, cb) => {
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
-         productValidator(req, file, cb)
+         productValidator(req, file, cb);
         //Check if product is created or updated
         // if(!("productId" in req.body)){
         //     if ((!name || isNumeric(name)) ||
