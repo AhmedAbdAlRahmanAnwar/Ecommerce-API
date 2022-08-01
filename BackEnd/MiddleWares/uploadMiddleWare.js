@@ -65,7 +65,7 @@ const fileFilter = (req, file, cb) => {
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
-         productValidator(req, file, cb);
+         // productValidator(req, file, cb);
         //Check if product is created or updated
         // if(!("productId" in req.body)){
         //     if ((!name || isNumeric(name)) ||
