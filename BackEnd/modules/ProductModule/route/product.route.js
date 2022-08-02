@@ -3,7 +3,7 @@ const router = express.Router();
 const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
 const upload = require('./../../../MiddleWares/uploadMiddleWare');
 const productValidator = require('./../../../Validators/productDetailsValidator');
-const validationMW = require('./../../../MiddleWares/validationMiddleWare')
+const validationMW = require('./../../../MiddleWares/validationMiddleWare');
 const {
     getAllProducts,
     getProductById,
@@ -11,7 +11,7 @@ const {
     updateProductDetails,
     updateProductImage,
     deleteProduct,
-    getProductsByCategory
+    getFilteredProducts
 }
     = require('./../controller/product.controller');
 
@@ -21,7 +21,7 @@ router.route("/product")
     .post(authUser, isAdmin, upload.single('image'), createProduct)
     .delete(authUser, isAdmin, deleteProduct)
 
-router.get("/product/category", getProductsByCategory)
+router.get("/product/filter", getFilteredProducts)
 router.get("/product/:id", getProductById)
 router.patch("/product/image", authUser, isAdmin, upload.single('image'), updateProductImage)
 

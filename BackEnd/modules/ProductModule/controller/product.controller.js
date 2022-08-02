@@ -3,16 +3,17 @@ const asyncHandler = require('express-async-handler');
 const errorHandler = require('./../../../Utilities/errorHandler');
 
 const getAllProducts = asyncHandler(async (request, response) => {
-    const page = Math.max(parseInt(request.query.page), 1);
-    const pageSize = 10;
+    const {page = 1} = request.query;
+    const pageNumber = Math.max(parseInt(page), 1);
+    const pageSize = 12;
     const products = await Product.find()
-        .populate({path: "category", select: "categoryName -_id"})
-        .limit(pageSize).skip(pageSize * (page - 1));
+        .populate({path: "category", select: "categoryName _id"})
+        .limit(pageSize).skip(pageSize * (pageNumber - 1));
     const productCount = await Product.countDocuments();
     const numberOfPages = Math.ceil(productCount / pageSize);
     if (products) {
         response.status(200).json({
-            page,
+            pageNumber,
             numberOfPages,
             products
         });
@@ -71,30 +72,92 @@ const deleteProduct = (request, response, next) => {
         .catch(() => errorHandler("Invalid Product Id", 422, next))
 }
 
-const getProductsByCategory = async (request, response, next) => {
-    // const category = request.query.categoryName;
-    // const products = await Product.aggregate([
-    //
-    //     {
-    //         $lookup: {
-    //             from: 'categories',
-    //             localField: 'category',
-    //             foreignField: '_id',
-    //             as: 'category'
-    //         }
-    //     }
-    //     ,
-    // {
-    //     $unwind: '$category'
-    // }
+const getFilteredProducts = (request, response, next) => {
+    const {
+        searchKey,
+        categoryId,
+        page = 1,
+        modelYearMin,
+        modelYearMax,
+        priceMin,
+        priceMax,
+        rating,
+        priceSort,
+        modelYearSort,
+        ratingSort
+    } = request.query;
+    const match = {}, sort = {_id: 1};
+    const pageNumber = Math.max(parseInt(page), 1);
+    const pageSize = 12;
 
-    // {
-    //     $match:{"category.categoryName" : request.query.categoryName}
-    // },
-    // ])
-    // response.json({products})
-    // .then()
-    //     .catch()
+    if (searchKey) match["name"] = {$regex: searchKey, $options: "i"};
+    if (categoryId) match["category"] = typeof categoryId === 'string' ? categoryId : {$in: categoryId};
+    if (rating) match["rating"] = {$gte: parseInt(rating)};
+
+    if (priceMin && priceMax) {
+        match["price"] = {$gte: parseInt(priceMin), $lte: parseInt(priceMax)};
+    } else if (priceMin) {
+        match["price"] = {$gte: parseInt(priceMin)};
+    } else if (priceMax) {
+        match["price"] = {$lte: parseInt(priceMax)};
+    }
+
+    if (modelYearMin && modelYearMax) {
+        match["modelYear"] = {$gte: parseInt(modelYearMin), $lte: parseInt(modelYearMax)};
+    } else if (modelYearMin) {
+        match["modelYear"] = {$gte: parseInt(modelYearMin)};
+    } else if (modelYearMax) {
+        match["modelYear"] = {$lte: parseInt(modelYearMax)};
+    }
+
+    if (priceSort) {
+        delete sort["_id"];
+        if (priceSort === "lth") {
+            sort["price"] = 1
+        } else if (priceSort === "htl") {
+            sort["price"] = -1
+        }
+    }
+
+    if (modelYearSort) {
+        delete sort["_id"];
+        if (modelYearSort === "lth") {
+            sort["modelYear"] = 1
+        } else if (modelYearSort === "htl") {
+            sort["modelYear"] = -1
+        }
+    }
+
+    if (ratingSort) {
+        delete sort["_id"];
+        if (ratingSort === "lth") {
+            sort["rating"] = 1
+        } else if (ratingSort === "htl") {
+            sort["rating"] = -1
+        }
+    }
+
+    Product.aggregate([{$match: match}, {$sort: sort},
+        {
+            $facet: {
+                totalCount: [
+                    {$count: 'count'}
+                ],
+                result: [
+                    {$skip: pageSize * (pageNumber - 1)}, {$limit: pageSize}
+                ]
+            }
+        }
+    ])
+        .then(data => {
+            const numberOfPages = Math.ceil((data[0].totalCount[0]?.count || 0) / pageSize);
+            response.status(200).json({
+                pageNumber,
+                numberOfPages,
+                products: data[0].result
+            });
+        })
+        .catch(error => errorHandler(error, 400, next))
 }
 
 module.exports = {
@@ -104,5 +167,5 @@ module.exports = {
     updateProductDetails,
     updateProductImage,
     deleteProduct,
-    getProductsByCategory
+    getFilteredProducts
 }

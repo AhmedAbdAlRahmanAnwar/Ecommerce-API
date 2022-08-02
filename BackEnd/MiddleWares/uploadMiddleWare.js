@@ -52,20 +52,18 @@ const isProductExists = (productId, cb) => {
                 deleteOldImage(product, cb);
             } else {
                 cb(null, false);
-                // errorHandler("Product not found", 404, cb);
             }
         })
         .catch(() => cb(null, false))
-        // .catch(() => errorHandler("invalid product ID", 422, cb))
 }
 
 const fileFilter = asyncHandler(async (req, file, cb) => {
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
-
-        !("productId" in req.body) ? await productValidator(req, file, cb)
-            : isProductExists(req.body.productId, cb)
+        cb(null, true);
+        // !("productId" in req.body) ? await productValidator(req, file, cb)
+        //     : isProductExists(req.body.productId, cb)
     } else {
         cb(null, false);
     }

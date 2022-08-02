@@ -24,6 +24,7 @@ const reviewSchema = new mongoose.Schema({
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
+        unique:true,
         required: true,
         validate(name) {
             if (isNumeric(name)) {
