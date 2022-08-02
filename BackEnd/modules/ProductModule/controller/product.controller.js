@@ -1,6 +1,7 @@
 const Product = require('./../model/product.model');
 const asyncHandler = require('express-async-handler');
 const errorHandler = require('./../../../Utilities/errorHandler');
+const mongoose = require('mongoose');
 
 const getAllProducts = asyncHandler(async (request, response) => {
     const {page = 1} = request.query;
@@ -29,9 +30,9 @@ const getProductById = (request, response, next) => {
 
 const createProduct = (request, response, next) => {
     if (request.file) {
-        const {name, price, description, modelYear, category, quantity, rating} = request.body;
+        const {name, price, description, modelYear, category, quantity} = request.body;
         const image = `/${request.file.key}`
-        Product.create({name, price, description, modelYear, category, quantity, rating, image})
+        Product.create({name, price, description, modelYear, category, quantity, image})
             .then(product => response.status(201).json({product}))
             .catch(error => errorHandler(error, 422, next))
     } else {
@@ -91,8 +92,10 @@ const getFilteredProducts = (request, response, next) => {
     const pageSize = 12;
 
     if (searchKey) match["name"] = {$regex: searchKey, $options: "i"};
-    if (categoryId) match["category"] = typeof categoryId === 'string' ? categoryId : {$in: categoryId};
     if (rating) match["rating"] = {$gte: parseInt(rating)};
+
+    if (categoryId) match["category"] = typeof categoryId === 'string' ? mongoose.Types.ObjectId(categoryId)
+        : {$in: categoryId.map(category => mongoose.Types.ObjectId(category))};
 
     if (priceMin && priceMax) {
         match["price"] = {$gte: parseInt(priceMin), $lte: parseInt(priceMax)};
@@ -137,7 +140,27 @@ const getFilteredProducts = (request, response, next) => {
         }
     }
 
-    Product.aggregate([{$match: match}, {$sort: sort},
+    Product.aggregate([
+        {
+            $match: match
+        },
+        {
+            $sort: sort
+        },
+        {
+            $lookup: {
+                from: "categories",
+                localField: 'category',
+                foreignField: '_id',
+                as: 'category'
+            }
+        },
+        {
+            $unwind: '$category'
+        },
+        {
+            $project: {"category.__v": 0}
+        },
         {
             $facet: {
                 totalCount: [
