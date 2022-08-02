@@ -2,6 +2,9 @@ const Product = require('./../model/product.model');
 const asyncHandler = require('express-async-handler');
 const errorHandler = require('./../../../Utilities/errorHandler');
 const mongoose = require('mongoose');
+const {DeleteObjectCommand} = require("@aws-sdk/client-s3");
+const s3 = require('./../../../Config/AWS_S3Configuration');
+
 
 const getAllProducts = asyncHandler(async (request, response) => {
     const {page = 1} = request.query;
@@ -9,6 +12,7 @@ const getAllProducts = asyncHandler(async (request, response) => {
     const pageSize = 12;
     const products = await Product.find()
         .populate({path: "category", select: "categoryName _id"})
+        .populate({path: "reviews.user", select: "firstName lastName -_id"})
         .limit(pageSize).skip(pageSize * (pageNumber - 1));
     const productCount = await Product.countDocuments();
     const numberOfPages = Math.ceil(productCount / pageSize);
@@ -23,6 +27,8 @@ const getAllProducts = asyncHandler(async (request, response) => {
 
 const getProductById = (request, response, next) => {
     Product.findById(request.params.id)
+        .populate({path: "category", select: "categoryName _id"})
+        .populate({path: "reviews.user", select: "firstName lastName -_id"})
         .then(product => product ? response.status(200).json({product})
             : errorHandler("Product not Found", 404, next))
         .catch(() => errorHandler("Not Valid Product ID", 422, next))
@@ -67,8 +73,14 @@ const updateProductImage = (request, response, next) => {
 const deleteProduct = (request, response, next) => {
     Product.findByIdAndDelete(request.body.productId)
         .then(product => {
-            product ? response.status(200).json({message: "product deleted"})
-                : errorHandler("Product Not Found", 404, next);
+            if (product) {
+                //Delete from Amazon S3
+                const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
+                s3.send(new DeleteObjectCommand(bucketParams))
+                response.status(200).json({message: "product deleted"})
+            } else {
+                errorHandler("Product Not Found", 404, next);
+            }
         })
         .catch(() => errorHandler("Invalid Product Id", 422, next))
 }
@@ -92,17 +104,17 @@ const getFilteredProducts = (request, response, next) => {
     const pageSize = 12;
 
     if (searchKey) match["name"] = {$regex: searchKey, $options: "i"};
-    if (rating) match["rating"] = {$gte: parseInt(rating)};
+    if (rating) match["rating"] = {$gte: parseFloat(rating)};
 
     if (categoryId) match["category"] = typeof categoryId === 'string' ? mongoose.Types.ObjectId(categoryId)
         : {$in: categoryId.map(category => mongoose.Types.ObjectId(category))};
 
     if (priceMin && priceMax) {
-        match["price"] = {$gte: parseInt(priceMin), $lte: parseInt(priceMax)};
+        match["price"] = {$gte: parseFloat(priceMin), $lte: parseFloat(priceMax)};
     } else if (priceMin) {
-        match["price"] = {$gte: parseInt(priceMin)};
+        match["price"] = {$gte: parseFloat(priceMin)};
     } else if (priceMax) {
-        match["price"] = {$lte: parseInt(priceMax)};
+        match["price"] = {$lte: parseFloat(priceMax)};
     }
 
     if (modelYearMin && modelYearMax) {
@@ -145,9 +157,6 @@ const getFilteredProducts = (request, response, next) => {
             $match: match
         },
         {
-            $sort: sort
-        },
-        {
             $lookup: {
                 from: "categories",
                 localField: 'category',
@@ -159,7 +168,61 @@ const getFilteredProducts = (request, response, next) => {
             $unwind: '$category'
         },
         {
-            $project: {"category.__v": 0}
+            $lookup: {
+                from: "users",
+                localField: "reviews.user",
+                foreignField: '_id',
+                as: 'userData'
+            }
+        },
+        {
+            $set: {
+                "reviews": {
+                    $map: {
+                        "input": "$reviews",
+                        "in": {
+                            $mergeObjects: [
+                                "$$this",
+                                {
+                                    user: {
+                                        $arrayElemAt: [
+                                            "$userData",
+                                            {
+                                                "$indexOfArray": [
+                                                    "$userData.id",
+                                                    "$$this.id"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            $unset: "userData"
+        },
+        {
+            $project: {
+                "category.__v": 0,
+                "reviews.user._id": 0,
+                "reviews.user.email": 0,
+                "reviews.user.password": 0,
+                "reviews.user.isAdmin": 0,
+                "reviews.user.address": 0,
+                "reviews.user.wishlist": 0,
+                "reviews.user.isLoggedIn": 0,
+                "reviews.user.__v": 0,
+                "reviews.user.resetPasswordToken": 0,
+                "reviews.user.createdAt": 0,
+                "reviews.user.updatedAt": 0,
+            }
+        },
+        {
+            $sort: sort
         },
         {
             $facet: {
@@ -171,15 +234,14 @@ const getFilteredProducts = (request, response, next) => {
                 ]
             }
         }
-    ])
-        .then(data => {
-            const numberOfPages = Math.ceil((data[0].totalCount[0]?.count || 0) / pageSize);
-            response.status(200).json({
-                pageNumber,
-                numberOfPages,
-                products: data[0].result
-            });
-        })
+    ]).then(data => {
+        const numberOfPages = Math.ceil((data[0].totalCount[0]?.count || 0) / pageSize);
+        response.status(200).json({
+            pageNumber,
+            numberOfPages,
+            products: data[0].result
+        });
+    })
         .catch(error => errorHandler(error, 400, next))
 }
 

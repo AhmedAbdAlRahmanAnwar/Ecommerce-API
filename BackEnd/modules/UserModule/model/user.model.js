@@ -24,8 +24,7 @@ const userAddress = new mongoose.Schema({
         type: String,
         validate(number) {
             if (!isMobilePhone(number)) {
-                const error = new Error("Phone Number is not valid");
-                throw error;
+                throw new Error("Phone Number is not valid");
             }
         }
     }
@@ -54,8 +53,7 @@ const userSchema = new mongoose.Schema({
         unique: true,
         validate(email) {
             if (!isEmail(email)) {
-                const error = new Error("Email is not valid");
-                throw error;
+                throw new Error("Email is not valid");
             }
         }
     },
@@ -78,7 +76,8 @@ const userSchema = new mongoose.Schema({
     address: [userAddress],
     wishlist: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Products"
+        ref: "Products",
+        required:true
     }]
 }, {timestamps: true});
 

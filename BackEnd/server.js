@@ -8,6 +8,7 @@ const authRoute = require('./modules/AuthenticationModule/route/auth.route');
 const userRoute = require('./modules/UserModule/route/user.route');
 const productRoute = require('./modules/ProductModule/route/product.route');
 const orderRoute = require('./modules/OrderModule/route/order.route');
+const reviewRoute = require('./modules/ReviewModule/route/review.route');
 const categoryRoute = require('./modules/CategoryModule/route/category.route');
 const errorHandler = require('./MiddleWares/errorMiddleWare');
 const notFound = require('./MiddleWares/notFoundMiddleWare');
@@ -36,6 +37,7 @@ server.use(authRoute);
 server.use(userRoute);
 server.use(productRoute);
 // server.use(orderRoute);
+server.use(reviewRoute);
 server.use(categoryRoute);
 
 //5- Not Found Middleware

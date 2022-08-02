@@ -4,10 +4,10 @@ module.exports = [
     query("categoryId").optional().isMongoId().withMessage("Invalid CategoryId"),
     query("page").optional().isNumeric().withMessage("Page must be a number"),
     query("modelYearMin").optional()
-        .isFloat({min:0})
+        .matches(/(^[1-9][0-9]*$)|(^0{1}$)/)
         .withMessage("Minimum Model Year must be a number greater than or equal 0"),
     query("modelYearMax").optional()
-        .isFloat({max: new Date().getFullYear()})
+        .matches(/(^[1-9][0-9]*$)|(^0{1}$)/)
         .withMessage("Max Model Year must be a number less than or equal current year"),
     query("priceMin").optional()
         .matches(/(^[1-9][0-9]*(.[0-9]+)?$)|(^0{1}$)/)

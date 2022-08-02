@@ -2,14 +2,12 @@ const mongoose = require('mongoose');
 const {isNumeric} = require('validator');
 
 const reviewSchema = new mongoose.Schema({
-    userName: {
-        type: String,
-        required: true
-    },
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
+        ref:"Users",
+        required:true
     },
-    rate: {
+    rating: {
         type: Number,
         required: true,
         max:5,

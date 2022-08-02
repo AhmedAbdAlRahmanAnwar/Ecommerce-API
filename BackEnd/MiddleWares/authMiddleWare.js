@@ -6,7 +6,7 @@ const authResetAction = (request, response, next) => {
     try {
         const token = request.header('authorization').split(" ")[1];
         const decodedToken = jwt.verify(token, process.env.JWT_Secret);
-        User.findById(decodedToken.id).select("-password")
+        User.findById(decodedToken.id).select("-password -resetPasswordToken")
             .then(user => {
                 if (user) {
                     if (user.email === request.body.payload.email) {
@@ -29,7 +29,7 @@ const authUser = async (request, response, next) => {
     try {
         const token = request.header('authorization').split(" ")[1];
         const decodedToken = jwt.verify(token, process.env.JWT_Secret);
-        User.findById(decodedToken.id)
+        User.findById(decodedToken.id).select("-password -resetPasswordToken")
             .then(user => {
                 if (user) {
                     if (user.isLoggedIn) {

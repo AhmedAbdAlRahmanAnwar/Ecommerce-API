@@ -26,9 +26,4 @@ router.get("/product/filter", queryValidator, validationMW, getFilteredProducts)
 router.get("/product/:id", getProductById)
 router.patch("/product/image", authUser, isAdmin, upload.single('image'), updateProductImage)
 
-router.route("/product/review")
-    .post()
-    .delete()
-
-
 module.exports = router;

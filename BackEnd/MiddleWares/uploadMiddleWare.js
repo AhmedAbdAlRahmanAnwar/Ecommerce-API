@@ -2,35 +2,27 @@ const path = require("path");
 const uuid = require("uuid").v4;
 const multer = require("multer");
 const multerS3 = require("multer-s3");
-const {S3Client, DeleteObjectCommand} = require("@aws-sdk/client-s3");
-const {isNumeric, isMongoId, isFloat} = require('validator');
+const {DeleteObjectCommand} = require("@aws-sdk/client-s3");
+const s3 = require('./../Config/AWS_S3Configuration');
+const {isNumeric, isMongoId} = require('validator');
 const Category = require('./../modules/CategoryModule/model/category.model');
 const Product = require('./../modules/ProductModule/model/product.model');
 const asyncHandler = require('express-async-handler');
 
-
-const s3 = new S3Client({
-    region: "eu-west-3",
-    credentials: {
-        accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
-    },
-});
 
 const isCategoryExist = (categoryId) => {
     return Category.findById(categoryId);
 }
 
 const productValidator = async (req, file, cb) => {
-    const {name, price, description, category, modelYear, quantity, rating} = req.body;
+    const {name, price, description, category, modelYear, quantity} = req.body;
 
     if ((!name || isNumeric(name)) ||
         (!description || isNumeric(description)) ||
         (!price || !isNumeric(price) || price < 0) ||
         (!quantity || !isNumeric(quantity) || quantity < 0) ||
         (modelYear ? (!isNumeric(modelYear) || modelYear < 0) : false) ||
-        (!category || !isMongoId(category) || !await isCategoryExist(category)) ||
-        (!rating || !isFloat(rating, {min: 0, max: 5}))
+        (!category || !isMongoId(category) || !await isCategoryExist(category))
     ) {
         cb(null, false);
     } else {
