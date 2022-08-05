@@ -14,5 +14,6 @@ router.route("/order/:id")
 
 router.post("/order/checkout", authUser, checkout)
 router.post("/order/checkout/success", success)
+router.get("/order/checkout/success", success)
 
 module.exports = router;
