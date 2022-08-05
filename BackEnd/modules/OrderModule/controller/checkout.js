@@ -10,7 +10,7 @@ module.exports = async (request, response, next) => {
             auth_token = data.token;
             return axios.post('https://accept.paymob.com/api/ecommerce/orders', {
                 "auth_token": data.token,
-                "delivery_needed": "true",
+                "delivery_needed": "false",
                 "amount_cents": request.body.payload.totalPrice,
                 "currency": "EGP",
                 "items": request.body.payload.products
@@ -39,7 +39,7 @@ module.exports = async (request, response, next) => {
                     "apartment": "NA",
                     "shipping_method": "NA",
                     "state": "NA"
-                },
+                }
                 // "lock_order_when_paid": "false"
             })
         })
