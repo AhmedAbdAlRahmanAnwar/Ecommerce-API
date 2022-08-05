@@ -1,4 +1,4 @@
-module.exports = (res,req,next)=>{
-    console.log(res)
-    res.json({data:res})
+module.exports = (req,res,next)=>{
+    console.log(res.body)
+    res.json({data:res.body})
 }
