@@ -36,7 +36,7 @@ server.get("/", (req, res) => {
 server.use(authRoute);
 server.use(userRoute);
 server.use(productRoute);
-// server.use(orderRoute);
+server.use(orderRoute);
 server.use(reviewRoute);
 server.use(categoryRoute);
 

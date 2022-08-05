@@ -40,7 +40,7 @@ const deleteOldImage = (product, cb) => {
 const isProductExists = (productId, cb) => {
     Product.findById(productId)
         .then(product => {
-            if (product) {
+            if (product && product.numberOfSales) {
                 deleteOldImage(product, cb);
             } else {
                 cb(null, false);

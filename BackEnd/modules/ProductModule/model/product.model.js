@@ -65,6 +65,11 @@ const productSchema = new mongoose.Schema({
         min:0,
         default: 0,
     },
+    numberOfSales:{
+        type: Number,
+        min:0,
+        default: 0,
+    },
     rating: {
         type: Number,
         required: true,

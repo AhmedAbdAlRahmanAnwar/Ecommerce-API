@@ -74,9 +74,11 @@ const deleteProduct = (request, response, next) => {
     Product.findByIdAndDelete(request.body.productId)
         .then(product => {
             if (product) {
-                //Delete from Amazon S3
-                const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
-                s3.send(new DeleteObjectCommand(bucketParams))
+                if (product.numberOfSales) {
+                    //Delete from Amazon S3
+                    const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
+                    s3.send(new DeleteObjectCommand(bucketParams))
+                }
                 response.status(200).json({message: "product deleted"})
             } else {
                 errorHandler("Product Not Found", 404, next);

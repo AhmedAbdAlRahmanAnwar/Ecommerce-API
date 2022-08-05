@@ -20,7 +20,7 @@ const sendWelcomeMail = userEmail => {
 }
 
 const sendForgetPasswordEmail = (userEmail, token) => {
-    const serverUrl = "http://localhost:3000";
+    const serverUrl = process.env.CLIENT;
     const email = {
         to: userEmail,
         from: process.env.EMAIL,       //put here your email (must be verified by sendGrid)
