@@ -1,5 +1,5 @@
 const createOrder = require('./createOrder');
 const checkout = require('./checkout');
-const success = require('./success');
+const {success,testget} = require('./success');
 
 module.exports = {success, checkout, createOrder}

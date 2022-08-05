@@ -20,7 +20,7 @@ module.exports = async (request, response, next) => {
             const {street, city, country, phone, postalCode} = request.body.payload.shippingAddress;
             return axios.post('https://accept.paymob.com/api/acceptance/payment_keys', {
                 auth_token,
-                "expiration": 1800,
+                "expiration": 3600,
                 "amount_cents": request.body.payload.totalPrice,
                 "currency": "EGP",
                 "order_id": data.id,
