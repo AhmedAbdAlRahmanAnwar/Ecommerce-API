@@ -1,8 +1,15 @@
 const Order = require('./../model/order.model');
 const errorHandler = require('./../../../Utilities/errorHandler');
+const addPagination = require('./../../../Utilities/addPagination');
 
-module.exports = (request, response, next)=>{
+module.exports = async (request, response, next) => {
+    const {pageNumber, pageSize, numberOfPages} = await addPagination(Order,request.query.page)
     Order.find().populate({path: "user", select: "firstName lastName"})
-        .then(orders => response.status(200).json({orders}))
+        .limit(pageSize).skip(pageSize * (pageNumber - 1))
+        .then(orders => response.status(200).json({
+            pageNumber,
+            numberOfPages,
+            orders
+        }))
         .catch(error => errorHandler(error, 400, next))
 }

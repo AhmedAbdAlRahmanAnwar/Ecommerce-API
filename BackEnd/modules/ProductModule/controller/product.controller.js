@@ -4,18 +4,16 @@ const errorHandler = require('./../../../Utilities/errorHandler');
 const mongoose = require('mongoose');
 const {DeleteObjectCommand} = require("@aws-sdk/client-s3");
 const s3 = require('./../../../Config/AWS_S3Configuration');
+const addPagination = require("../../../Utilities/addPagination");
 
 
 const getAllProducts = asyncHandler(async (request, response) => {
-    const {page = 1} = request.query;
-    const pageNumber = Math.max(parseInt(page), 1);
-    const pageSize = 12;
+    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product,request.query.page)
     const products = await Product.find()
         .populate({path: "category", select: "categoryName _id"})
         .populate({path: "reviews.user", select: "firstName lastName -_id"})
         .limit(pageSize).skip(pageSize * (pageNumber - 1));
-    const productCount = await Product.countDocuments();
-    const numberOfPages = Math.ceil(productCount / pageSize);
+
     if (products) {
         response.status(200).json({
             pageNumber,
@@ -101,8 +99,9 @@ const getFilteredProducts = (request, response, next) => {
         modelYearSort,
         ratingSort
     } = request.query;
+
     const match = {}, sort = {_id: 1};
-    const pageNumber = Math.max(parseInt(page), 1);
+    const pageNumber = parseInt(page) ? Math.max(parseInt(page), 1) : 1;
     const pageSize = 12;
 
     if (searchKey) match["name"] = {$regex: searchKey, $options: "i"};
