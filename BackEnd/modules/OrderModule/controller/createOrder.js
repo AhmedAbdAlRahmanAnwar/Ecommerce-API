@@ -47,7 +47,7 @@ module.exports = async (request, response, next) => {
         const orderObject = {
             user: request.user["_id"],
             products,
-            totalPrice,    //cart.totalPrice
+            totalPrice,
             shippingAddress,
             paymentMethod,
         };
@@ -83,16 +83,23 @@ module.exports = async (request, response, next) => {
             await user.save();
             */
 
-            axios.post(process.env.BACKEND_SERVER + '/order/create-payment-intent', {totalPrice},
-                {
-                    headers: {
-                        "authorization": `Bearer ${request.token}`
-                    }
-                })
-                .then(res => response.status(201).json({message: "order created", clientSecret: res.data.clientSecret}))
-                .catch(error => errorHandler(error, 502, next))
+            //Call Stripe Gateway to get ClientSecret
+            if (paymentMethod === "card") {
+                axios.post(`${request.protocol}://${request.get('host')}/order/create-payment-intent`, {totalPrice},
+                    {
+                        headers: {
+                            "authorization": `Bearer ${request.token}`
+                        }
+                    })
+                    .then(res => response.status(201).json({
+                        message: "order created",
+                        clientSecret: res.data.clientSecret
+                    }))
+                    .catch(error => errorHandler(error, 502, next))
+            } else {
+                response.status(201).json({message: "order created"});
+            }
         }
-
     } catch (error) {
         errorHandler(error.message, 400, next);
     }
