@@ -1,7 +1,6 @@
 const Order = require('./../model/order.model');
 const errorHandler = require('./../../../Utilities/errorHandler');
 
-
 module.exports = (request, response, next) => {
     Order.findById(request.params.id).populate({path:"user", select:"firstName lastName"})
         .then(order => {
