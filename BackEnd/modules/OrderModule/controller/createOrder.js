@@ -1,10 +1,11 @@
 const Order = require('./../model/order.model');
 const Product = require('./../../ProductModule/model/product.model');
+const axios = require('axios').default;
 const errorHandler = require('./../../../Utilities/errorHandler');
 
 
 module.exports = async (request, response, next) => {
-    const {products, shippingAddress, paymentMethod, totalPrice} = request.body.payload;
+    const {products, shippingAddress, paymentMethod} = request.body.payload;
     const {street, city, country, phone, postalCode} = shippingAddress;
 
     //Check if user entered required data
@@ -21,6 +22,7 @@ module.exports = async (request, response, next) => {
 
     //Check if the required product quantity exists in stock
     try {
+        let totalPrice = 0;
         const productsQuantityErrors = [];
         for (const productItem of products) {
             const {productId, quantity} = productItem;
@@ -29,6 +31,7 @@ module.exports = async (request, response, next) => {
                 if (parseInt(quantity) > parseInt(product.quantity)) {
                     productsQuantityErrors.push({productId, quantity: product.quantity});
                 }
+                totalPrice += product.price;
             } else {
                 errorHandler("Product Not Found", 404, next);
                 return;
@@ -73,13 +76,21 @@ module.exports = async (request, response, next) => {
                 await product.save();
             }
 
-            //Delete Products from Cart
             /*
+            //Delete Products from Cart
             const user = await User.findById(request.user._id);
             user.cart = [];
             await user.save();
             */
-            response.status(201).json({message: "order created"});
+
+            axios.post(process.env.BACKEND_SERVER + '/order/create-payment-intent', {totalPrice},
+                {
+                    headers: {
+                        "authorization": `Bearer ${request.token}`
+                    }
+                })
+                .then(res => response.status(201).json({message: "order created", clientSecret: res.data.clientSecret}))
+                .catch(error => errorHandler(error, 502, next))
         }
 
     } catch (error) {

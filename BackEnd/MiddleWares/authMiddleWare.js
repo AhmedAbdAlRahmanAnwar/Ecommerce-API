@@ -19,7 +19,7 @@ const authResetAction = (request, response, next) => {
                 } else {
                     errorHandler("User Not Found", 404, next)
                 }
-            }).catch(error => errorHandler(error, 422, next))
+            })
     } catch (error) {
         errorHandler("Not Authenticated", 401, next)
     }
@@ -34,6 +34,7 @@ const authUser = async (request, response, next) => {
                 if (user) {
                     if (user.isLoggedIn) {
                         request.user = user;
+                        request.token = token;
                         next();
                     } else {
                         errorHandler("Not Authorized", 403, next)

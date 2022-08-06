@@ -20,14 +20,13 @@ const sendWelcomeMail = userEmail => {
 }
 
 const sendForgetPasswordEmail = (userEmail, token) => {
-    const serverUrl = process.env.CLIENT;
     const email = {
         to: userEmail,
         from: process.env.EMAIL,       //put here your email (must be verified by sendGrid)
         subject: 'Reset password',
         html: `<body>
                     <p>Click to set a new password : 
-                        <a href="${serverUrl}/resetPassword/${token}">Reset password</a>
+                        <a href="${process.env.CLIENT}/resetPassword/${token}">Reset password</a>
                     </p>
                </body>`
     };
