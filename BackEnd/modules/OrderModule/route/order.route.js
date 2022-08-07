@@ -18,6 +18,6 @@ router.route("/order/:id")
     .patch(authUser, cancelOrder)
 
 
-router.post("/order/create-payment-intent", authUser, checkout)
+router.post("/create-payment-intent", authUser, checkout)
 
 module.exports = router;

@@ -51,7 +51,7 @@ module.exports = async (request, response, next) => {
 
             //Call Stripe Gateway to get ClientSecret
             if (paymentMethod === "card") {
-                axios.post(`${request.protocol}://${request.get('host')}/order/create-payment-intent`,
+                axios.post(`${request.protocol}://${request.get('host')}/create-payment-intent`,
                     {
                         totalPrice: request.totalPrice
                     },
@@ -62,11 +62,12 @@ module.exports = async (request, response, next) => {
                     })
                     .then(res => response.status(201).json({
                         message: "order created",
+                        orderId:order["_id"],
                         clientSecret: res.data.clientSecret
                     }))
                     .catch(error => errorHandler(error, 502, next))
             } else {
-                response.status(201).json({message: "order created"});
+                response.status(201).json({message: "order created", orderId:order["_id"]});
             }
         }
     } catch (error) {
