@@ -4,5 +4,14 @@ const getAllOrders = require('./getAllOrders');
 const getOrderById = require('./getOrderById');
 const getOrdersByUserId = require('./getOrdersByUserId');
 const getMyOrders = require('./getMyOrders');
+const cancelOrder = require('./cancelOrder');
 
-module.exports = {checkout, createOrder, getAllOrders, getOrderById, getOrdersByUserId, getMyOrders}
+module.exports = {
+    checkout,
+    createOrder,
+    getAllOrders,
+    getOrderById,
+    getOrdersByUserId,
+    getMyOrders,
+    cancelOrder,
+}
