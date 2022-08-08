@@ -32,15 +32,7 @@ module.exports = async (request, response, next) => {
                 response.status(201).json({message: "order created", order});
             }
         } else if (paymentMethod === "card") {
-            const today = new Date();
-            const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' +
-                today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-
-            order = await Order.create({
-                ...orderObject,
-                isPaid: true,
-                paidAt: date
-            });
+            order = await Order.create(orderObject);
 
             if (order){
                 //Call Stripe Gateway to get ClientSecret
