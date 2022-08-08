@@ -6,6 +6,7 @@ const getOrdersByUserId = require('./getOrdersByUserId');
 const getMyOrders = require('./getMyOrders');
 const cancelOrder = require('./cancelOrder');
 const updateStock = require('./updateStock');
+const updateOrderStatus = require('./updateOrderStatus');
 
 module.exports = {
     checkout,
@@ -16,4 +17,5 @@ module.exports = {
     getMyOrders,
     cancelOrder,
     updateStock,
+    updateOrderStatus
 }

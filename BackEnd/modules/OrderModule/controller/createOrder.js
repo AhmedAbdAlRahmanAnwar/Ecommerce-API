@@ -22,19 +22,20 @@ module.exports = async (request, response, next) => {
             order = await Order.create(orderObject);
             //Update Stock
             if (order) {
-                for (const productItem of products) {
-                    const {quantity, productId} = productItem;
+                for (const {quantity, productId} of products) {
                     const product = await Product.findById(productId);
-                    product.quantity -= quantity;
-                    product.numberOfSales += quantity;
-                    await product.save();
+                    if (product) {
+                        product.quantity -= quantity;
+                        product.numberOfSales += quantity;
+                        await product.save();
+                    }
                 }
                 response.status(201).json({message: "order created", order});
             }
         } else if (paymentMethod === "card") {
             order = await Order.create(orderObject);
 
-            if (order){
+            if (order) {
                 //Call Stripe Gateway to get ClientSecret
                 axios.post(`${request.protocol}://${request.get('host')}/create-payment-intent`,
                     {totalPrice: request.totalPrice},
