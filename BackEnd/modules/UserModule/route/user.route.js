@@ -2,11 +2,10 @@ const express = require('express');
 const router = express.Router();
 const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
 const validationMW = require('./../../../MiddleWares/validationMiddleWare');
-const {
-    addProductToWishlist,
-    deleteProductFromWishlist,
-    clearWishlist
-} = require('./../controller/user.controller');
+const {addProductToWishlist, deleteProductFromWishlist, clearWishlist}
+    = require('./../controller/user.wishlist.controller');
+const {} = require('./../controller/user.controller');
+
 
 
 router.route("/user")
@@ -25,7 +24,7 @@ router.route("/user/address")
     .put()
 
 router.route("/user/wishlist")
-    .put(authUser,addProductToWishlist)
+    .put(authUser, addProductToWishlist)
     .delete(authUser, deleteProductFromWishlist)
 
 router.delete("/user/wishlist/clear", authUser, clearWishlist)
