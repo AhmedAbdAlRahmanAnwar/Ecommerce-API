@@ -5,6 +5,7 @@ const getOrderById = require('./getOrderById');
 const getOrdersByUserId = require('./getOrdersByUserId');
 const getMyOrders = require('./getMyOrders');
 const cancelOrder = require('./cancelOrder');
+const updateStock = require('./updateStock');
 
 module.exports = {
     checkout,
@@ -14,4 +15,5 @@ module.exports = {
     getOrdersByUserId,
     getMyOrders,
     cancelOrder,
+    updateStock,
 }

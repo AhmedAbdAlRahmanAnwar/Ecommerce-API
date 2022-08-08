@@ -12,8 +12,8 @@ const isCategoryExist = (categoryId) => {
 }
 
 module.exports = [
-    body("payload").optional()
-        .custom(payload => !(("image" in payload) || ("rating" in payload)))
+    body("payload")
+        .custom(payload => !(("image" in payload) || ("rating" in payload) || ("numberOfSales" in payload)))
         .withMessage("not allowed updates"),
     body("payload.name").optional()
         .custom(name => !isNumeric(name))

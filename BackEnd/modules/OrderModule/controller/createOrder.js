@@ -20,6 +20,17 @@ module.exports = async (request, response, next) => {
 
         if (paymentMethod === "cash") {
             order = await Order.create(orderObject);
+            //Update Stock
+            if (order) {
+                for (const productItem of products) {
+                    const {quantity, productId} = productItem;
+                    const product = await Product.findById(productId);
+                    product.quantity -= quantity;
+                    product.numberOfSales += quantity;
+                    await product.save();
+                }
+                response.status(201).json({message: "order created", order});
+            }
         } else if (paymentMethod === "card") {
             const today = new Date();
             const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' +
@@ -30,44 +41,18 @@ module.exports = async (request, response, next) => {
                 isPaid: true,
                 paidAt: date
             });
-        }
 
-        //Update product NumberOfSales and quantity fields
-        if (order) {
-            for (const productItem of products) {
-                const {quantity, productId} = productItem;
-                const product = await Product.findById(productId);
-                product.quantity -= quantity;
-                product.numberOfSales += quantity;
-                await product.save();
-            }
-
-            /*
-            //Delete Products from Cart
-            const user = await User.findById(request.user._id);
-            user.cart = [];
-            await user.save();
-            */
-
-            //Call Stripe Gateway to get ClientSecret
-            if (paymentMethod === "card") {
+            if (order){
+                //Call Stripe Gateway to get ClientSecret
                 axios.post(`${request.protocol}://${request.get('host')}/create-payment-intent`,
-                    {
-                        totalPrice: request.totalPrice
-                    },
-                    {
-                        headers: {
-                            "authorization": `Bearer ${request.token}`
-                        }
-                    })
+                    {totalPrice: request.totalPrice},
+                    {headers: {"authorization": `Bearer ${request.token}`}})
                     .then(res => response.status(201).json({
                         message: "order created",
-                        orderId:order["_id"],
-                        clientSecret: res.data.clientSecret
+                        clientSecret: res.data.clientSecret,
+                        order
                     }))
-                    .catch(error => errorHandler(error, 502, next))
-            } else {
-                response.status(201).json({message: "order created", orderId:order["_id"]});
+                    .catch(error => errorHandler(error.message, 502, next))
             }
         }
     } catch (error) {

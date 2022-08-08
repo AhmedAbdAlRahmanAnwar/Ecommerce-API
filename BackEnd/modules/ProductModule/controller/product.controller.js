@@ -8,7 +8,7 @@ const addPagination = require("../../../Utilities/addPagination");
 
 
 const getAllProducts = asyncHandler(async (request, response) => {
-    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product,request.query.page)
+    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product, request.query.page)
     const products = await Product.find()
         .populate({path: "category", select: "categoryName _id"})
         .populate({path: "reviews.user", select: "firstName lastName -_id"})
@@ -45,16 +45,13 @@ const createProduct = (request, response, next) => {
 }
 
 const updateProductDetails = (request, response, next) => {
-    if ("image" in request.body.payload || "rating" in request.body.payload) {
-        errorHandler("not allowed updates", 400, next)
-    } else {
-        Product.findByIdAndUpdate(request.body.productId, request.body.payload, {runValidators: true})
-            .then(product => {
-                product ? response.status(200).json({message: "product details updated"})
-                    : errorHandler("Product not found", 404, next)
-            })
-            .catch(() => errorHandler("Invalid Product Id", 422, next))
-    }
+    Product.findByIdAndUpdate(request.body.productId, request.body.payload, {runValidators: true})
+        .then(product => {
+            product ? response.status(200).json({message: "product details updated"})
+                : errorHandler("Product not found", 404, next)
+        })
+        .catch(() => errorHandler("Invalid Product Id", 422, next))
+
 }
 
 const updateProductImage = (request, response, next) => {
