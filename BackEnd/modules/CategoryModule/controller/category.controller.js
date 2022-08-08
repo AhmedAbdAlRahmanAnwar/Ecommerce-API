@@ -27,11 +27,32 @@ const deleteCategory = (request, response, next) => {
             category ? response.status(200).json({message: "category deleted"})
                 : errorHandler("Category Not Found", 404, next);
         })
-        .catch(() => errorHandler("InValid Category ID", 422, next))
+        .catch(() => errorHandler("InValid Category ID", 400, next))
+}
+
+const updateCategory = (request, response, next) => {
+    const {categoryId, categoryName, categoryDescription} = request.body.payload;
+    if (!categoryName && !categoryDescription){
+        errorHandler("Fields Required", 400, next);
+        return;
+    }
+    Category.findById(categoryId)
+        .then(async category=>{
+            if (!category){
+                errorHandler("Category Not Found", 404, next);
+                return;
+            }
+            category.categoryName = categoryName ? categoryName : category.categoryName;
+            category.categoryDescription = categoryDescription ? categoryDescription : category.categoryDescription;
+            await category.save();
+            response.status(200).json({category, message:"Category Updated"})
+        })
+        .catch(()=>errorHandler("Invalid Category ID", 400, next))
 }
 
 module.exports = {
     getAllCategories,
     createCategories,
+    updateCategory,
     deleteCategory
 }
