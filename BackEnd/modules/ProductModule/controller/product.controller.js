@@ -82,7 +82,7 @@ const deleteProduct = (request, response, next) => {
         .catch(() => errorHandler("Invalid Product Id", 422, next))
 }
 
-const getFilteredProducts = (request, response, next) => {
+const getFilteredProducts = async (request, response, next) => {
     const {
         searchKey,
         categoryId,
@@ -98,8 +98,7 @@ const getFilteredProducts = (request, response, next) => {
     } = request.query;
 
     const match = {}, sort = {_id: 1};
-    const pageNumber = parseInt(page) ? Math.max(parseInt(page), 1) : 1;
-    const pageSize = 12;
+    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product, page)
 
     if (searchKey) match["name"] = {$regex: searchKey, $options: "i"};
     if (rating) match["rating"] = {$gte: parseFloat(rating)};
@@ -150,6 +149,21 @@ const getFilteredProducts = (request, response, next) => {
         }
     }
 
+    Product.find(match)
+        .populate({path: "category", select: "categoryName"})
+        .populate({
+            path: "reviews.user",
+            select: "firstName lastName -_id"
+        }).sort(sort).limit(pageSize).skip(pageSize * (pageNumber - 1))
+        .then(products => {
+            response.status(200).json({
+                pageNumber,
+                numberOfPages,
+                products
+            });
+        })
+        .catch(error => errorHandler(error, 400, next))
+    /*
     Product.aggregate([
         {
             $match: match
@@ -241,6 +255,7 @@ const getFilteredProducts = (request, response, next) => {
         });
     })
         .catch(error => errorHandler(error, 400, next))
+    */
 }
 
 module.exports = {

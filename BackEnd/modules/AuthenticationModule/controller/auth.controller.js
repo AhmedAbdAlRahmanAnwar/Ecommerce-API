@@ -6,6 +6,11 @@ const errorHandler = require('./../../../Utilities/errorHandler');
 const login = function (request, response, next) {
     const {email, password} = request.body.payload;
     User.findOne({email})
+        .populate([
+            {path: "wishlist.product", populate: {path: "category", select: "categoryName"}},
+            {path: "wishlist.product", populate: {path: "reviews.user", select: "firstName lastName -_id"}}
+        ])
+
         .then(async user => {
             if (user && await (user.matchPassword(password))) {
                 const expire = "1d";
