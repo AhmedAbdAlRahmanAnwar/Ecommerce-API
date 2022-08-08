@@ -4,11 +4,10 @@ const Product = require("../modules/ProductModule/model/product.model");
 
 module.exports = async (request, response, next) => {
     const {products, shippingAddress, paymentMethod} = request.body.payload;
-    const {street, city, country, phone, postalCode} = shippingAddress;
+    const {street, city, country, mobile} = shippingAddress;
 
     //Check if user entered required data
-    if (!paymentMethod || !street
-        || !city || !country || !postalCode || !phone) {
+    if (!paymentMethod || !street || !city || !country || !mobile) {
         errorHandler("Fields Required", 400, next);
         return;
     }

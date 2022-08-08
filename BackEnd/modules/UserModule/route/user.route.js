@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('./../controller/user.controller');
 const validationMW = require('./../../../MiddleWares/validationMiddleWare');
+const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
 const router = express.Router();
 
 
@@ -8,10 +9,12 @@ router.route("/user")
     .get()
     .post()
     .patch()
+
+router.route("/user/:id")
+    .get()
     .delete()
 
-router.get("/user/:id")
-router.get("/user/order/:id")
+router.patch("/user/addAdmin/:id")
 
 router.route("/user/address")
     .post()

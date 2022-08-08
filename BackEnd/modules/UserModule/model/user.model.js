@@ -22,8 +22,8 @@ const userAddress = new mongoose.Schema({
     },
     mobile: {
         type: String,
-        validate(number) {
-            if (!isMobilePhone(number)) {
+        validate(mobile) {
+            if (!isMobilePhone(mobile)) {
                 throw new Error("Phone Number is not valid");
             }
         }
