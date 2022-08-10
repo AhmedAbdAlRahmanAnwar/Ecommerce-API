@@ -1,24 +1,38 @@
 const mongoose = require("mongoose");
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 const bcrypt = require("bcrypt");
-const {isEmail, isMobilePhone} = require("validator");
+const {isEmail, isMobilePhone, isNumeric} = require("validator");
 
 const userAddress = new mongoose.Schema({
-    id: Number,
+    _id: Number,
     street: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        lowercase: true
     },
     city: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        lowercase: true,
+        validate(city) {
+            if (isNumeric(city)) {
+                throw new Error("City should be a string");
+            }
+        }
+
     },
     country: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        lowercase: true,
+        validate(country) {
+            if (isNumeric(country)) {
+                throw new Error("Country should be a string");
+            }
+        }
     },
     mobile: {
         type: String,
@@ -28,9 +42,9 @@ const userAddress = new mongoose.Schema({
             }
         }
     }
-})
+},{ _id: false })
 
-userAddress.plugin(AutoIncrement, {id: "address_id_Counter", inc_field: 'id'});
+userAddress.plugin(AutoIncrement);
 
 const userSchema = new mongoose.Schema({
     firstName: {

@@ -57,7 +57,7 @@ const signup = function (request, response, next) {
                 })
             }
         })
-        .catch(error => errorHandler(error, 422, next))
+        .catch(error => errorHandler(error.message, 422, next))
 }
 
 const forgetPassword = (request, response, next) => {
