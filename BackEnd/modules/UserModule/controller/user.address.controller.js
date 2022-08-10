@@ -28,7 +28,18 @@ const updateAddress = (request, response, next) => {
 }
 
 const deleteAddress = (request, response, next) => {
-
+    User.findById(request.user["_id"])
+        .then(async user =>{
+            const addressIndex = user.address.findIndex(address=> address["_id"] === +request.params.id);
+            if (addressIndex === -1) {
+                errorHandler("Address id doesn't exist", 400, next);
+                return;
+            }
+            user.address.splice(addressIndex,1);
+            await user.save();
+            response.status(200).json({message: "address deleted"});
+        })
+        .catch(error => errorHandler(error.message, 400, next))
 }
 
 module.exports = {
