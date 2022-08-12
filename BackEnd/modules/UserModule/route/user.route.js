@@ -3,18 +3,19 @@ const router = express.Router();
 const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
 const validationMW = require('./../../../MiddleWares/validationMiddleWare');
 const validateAddress = require('./../../../Validators/addressValidator');
+const {addNewAddress, updateAddress, deleteAddress} = require('./../controller/user.address.controller');
+const {getAllUsers, getUserById} = require('./../controller/user.controller');
 const {addProductToWishlist, deleteProductFromWishlist, clearWishlist}
     = require('./../controller/user.wishlist.controller');
-const {addNewAddress, updateAddress, deleteAddress} = require('./../controller/user.address.controller');
 
 
 router.route("/user")
-    .get()
+    .get(authUser, isAdmin, getAllUsers)
     .post()
     .patch()
 
 router.route("/user/:id")
-    .get()
+    .get(authUser, isAdmin, getUserById)
     .delete()
 
 router.patch("/user/addAdmin/:id")

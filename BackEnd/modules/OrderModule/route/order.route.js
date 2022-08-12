@@ -7,7 +7,6 @@ const {
     createOrder,
     getAllOrders,
     getOrderById,
-    getOrdersByUserId,
     getMyOrders,
     cancelOrder,
     updateStock,
@@ -21,7 +20,6 @@ router.route("/order")
     .patch(authUser, isAdmin, updateOrderStatus)
 
 router.get("/order/me", authUser, getMyOrders)
-router.get("/order/user/:id", authUser, isAdmin, getOrdersByUserId)
 router.get("/order/success/:id", authUser, updateStock)
 
 router.route("/order/:id")
