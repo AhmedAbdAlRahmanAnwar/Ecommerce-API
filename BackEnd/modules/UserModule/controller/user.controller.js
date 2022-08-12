@@ -28,7 +28,27 @@ const getUserById = (request, response, next) => {
         .catch(error => errorHandler(error.message, 400, next))
 }
 
+const deleteUser = async (request, response, next) => {
+    try {
+        const user = await User.findById(request.params.id);
+        if (!user) {
+            errorHandler("User Not Found", 404, next);
+            return;
+        }
+        if (request.params.id === request.user["_id"].toString()) {
+            errorHandler("Admin can't delete himself", 400, next);
+            return;
+        }
+        user.deleteOne()
+            .then(() => response.status(200).json({message: "User Deleted Successfully"}));
+
+    } catch (error) {
+        errorHandler(error.message, 400, next)
+    }
+}
+
 module.exports = {
     getAllUsers,
-    getUserById
+    getUserById,
+    deleteUser
 };
