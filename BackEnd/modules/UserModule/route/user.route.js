@@ -4,7 +4,7 @@ const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
 const validationMW = require('./../../../MiddleWares/validationMiddleWare');
 const validateAddress = require('./../../../Validators/addressValidator');
 const {addNewAddress, updateAddress, deleteAddress} = require('./../controller/user.address.controller');
-const {getAllUsers, getUserById, deleteUser} = require('./../controller/user.controller');
+const {getAllUsers, getUserById, deleteUser, makeUserAdmin} = require('./../controller/user.controller');
 const {addProductToWishlist, deleteProductFromWishlist, clearWishlist}
     = require('./../controller/user.wishlist.controller');
 
@@ -18,7 +18,7 @@ router.route("/user/:id")
     .get(authUser, isAdmin, getUserById)
     .delete(authUser, isAdmin, deleteUser)
 
-router.patch("/user/addAdmin/:id")
+router.patch("/user/addAdmin/:id", authUser, isAdmin, makeUserAdmin)
 
 router.route("/user/address")
     .post(authUser, validateAddress, validationMW, addNewAddress)

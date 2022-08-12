@@ -47,8 +47,22 @@ const deleteUser = async (request, response, next) => {
     }
 }
 
+const makeUserAdmin = async (request, response, next) => {
+    try {
+        const user = await User.findByIdAndUpdate(request.params.id,{isAdmin:true});
+        if (!user) {
+            errorHandler("User Not Found", 404, next);
+            return;
+        }
+        response.status(200).json({message:"User Updated to be Admin"});
+    } catch (error) {
+        errorHandler("Invalid UserId", 400, next)
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
-    deleteUser
+    deleteUser,
+    makeUserAdmin
 };
