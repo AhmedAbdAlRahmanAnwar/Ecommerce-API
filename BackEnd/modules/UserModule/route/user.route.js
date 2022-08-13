@@ -3,8 +3,10 @@ const router = express.Router();
 const {authUser, isAdmin} = require('./../../../MiddleWares/authMiddleWare');
 const validationMW = require('./../../../MiddleWares/validationMiddleWare');
 const validateAddress = require('./../../../Validators/addressValidator');
+const validateNewUserInfo = require('./../../../Validators/userInfoValidator');
 const {addNewAddress, updateAddress, deleteAddress} = require('./../controller/user.address.controller');
-const {getAllUsers, getUserById, deleteUser, makeUserAdmin} = require('./../controller/user.controller');
+const {getAllUsers, getUserById, deleteUser, makeUserAdmin, updateUserInfo}
+    = require('./../controller/user.controller');
 const {addProductToWishlist, deleteProductFromWishlist, clearWishlist}
     = require('./../controller/user.wishlist.controller');
 
@@ -12,7 +14,7 @@ const {addProductToWishlist, deleteProductFromWishlist, clearWishlist}
 router.route("/user")
     .get(authUser, isAdmin, getAllUsers)
     .post()
-    .patch()
+    .patch(authUser, validateNewUserInfo, validationMW, updateUserInfo)
 
 router.route("/user/:id")
     .get(authUser, isAdmin, getUserById)

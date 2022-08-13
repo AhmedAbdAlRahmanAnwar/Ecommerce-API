@@ -49,14 +49,35 @@ const deleteUser = async (request, response, next) => {
 
 const makeUserAdmin = async (request, response, next) => {
     try {
-        const user = await User.findByIdAndUpdate(request.params.id,{isAdmin:true});
+        const user = await User.findByIdAndUpdate(request.params.id, {isAdmin: true});
         if (!user) {
             errorHandler("User Not Found", 404, next);
             return;
         }
-        response.status(200).json({message:"User Updated to be Admin"});
+        response.status(200).json({message: "User Updated to be Admin"});
     } catch (error) {
-        errorHandler("Invalid UserId", 400, next)
+        errorHandler("Invalid UserId", 400, next);
+    }
+}
+
+const updateUserInfo = async (request, response, next) => {
+    const {firstName, lastName, oldEmail, newEmail} = request.body.payload;
+
+    if ((!firstName && !lastName && !newEmail) ||
+        (oldEmail && !newEmail) || (!oldEmail && newEmail) ||
+        (oldEmail && oldEmail !== request.user.email)) {
+        errorHandler("incorrect data", 400, next);
+        return;
+    }
+    try{
+        const user = await User.findById(request.user["_id"]);
+        user.firstName = firstName ? firstName : user.firstName;
+        user.lastName = lastName ? lastName : user.lastName;
+        user.email = newEmail ? newEmail : user.email;
+        await user.save();
+        response.status(200).json({message: "User Data Updated Successfully"})
+    }catch(error){
+        errorHandler(error.message, 400, next)
     }
 }
 
@@ -64,5 +85,6 @@ module.exports = {
     getAllUsers,
     getUserById,
     deleteUser,
-    makeUserAdmin
+    makeUserAdmin,
+    updateUserInfo
 };

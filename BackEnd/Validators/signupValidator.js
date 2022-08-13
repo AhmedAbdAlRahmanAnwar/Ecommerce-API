@@ -21,6 +21,6 @@ module.exports = [
         .isEmail().withMessage("Invalid email format")
         .custom(email => checkIfEmailExists(email)),
     body("payload.password")
-        .matches(/^(?=.*([A-Z]){1,})(?=.*[!@#$&*]{1,})(?=.*[0-9]{1,})(?=.*[a-z]{1,}).{8,}$/g)
+        .matches(/^(?=.*([A-Z])+)(?=.*[!@#$&*]+)(?=.*[0-9]+)(?=.*[a-z]+).{8,}$/g)
         .withMessage("Invalid Password Format")
 ]

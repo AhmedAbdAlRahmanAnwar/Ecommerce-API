@@ -22,13 +22,13 @@ module.exports = [
         .custom(description => !isNumeric(description))
         .withMessage("product description should be a string"),
     body("payload.price").optional()
-        .matches(/(^[1-9][0-9]*(.[0-9]+)?$)|(^0{1}$)/)
+        .matches(/(^[1-9][0-9]*(.[0-9]+)?$)|(^0$)/)
         .withMessage("invalid price"),
     body("payload.quantity").optional()
-        .matches(/(^[1-9][0-9]*$)|(^0{1}$)/)
+        .matches(/(^[1-9][0-9]*$)|(^0$)/)
         .withMessage("invalid quantity"),
     body("payload.modelYear").optional()
-        .matches(/(^[1-9][0-9]*$)|(^0{1}$)/)
+        .matches(/(^[1-9][0-9]*$)|(^0$)/)
         .withMessage("invalid modelYear"),
     body("payload.category").optional()
         .isMongoId().withMessage("invalid category")
