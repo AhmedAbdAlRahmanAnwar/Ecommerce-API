@@ -69,14 +69,14 @@ const updateUserInfo = async (request, response, next) => {
         errorHandler("incorrect data", 400, next);
         return;
     }
-    try{
+    try {
         const user = await User.findById(request.user["_id"]);
         user.firstName = firstName ? firstName : user.firstName;
         user.lastName = lastName ? lastName : user.lastName;
         user.email = newEmail ? newEmail : user.email;
         await user.save();
         response.status(200).json({message: "User Data Updated Successfully"})
-    }catch(error){
+    } catch (error) {
         errorHandler(error.message, 400, next)
     }
 }

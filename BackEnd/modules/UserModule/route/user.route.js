@@ -13,7 +13,6 @@ const {addProductToWishlist, deleteProductFromWishlist, clearWishlist}
 
 router.route("/user")
     .get(authUser, isAdmin, getAllUsers)
-    .post()
     .patch(authUser, validateNewUserInfo, validationMW, updateUserInfo)
 
 router.route("/user/:id")
