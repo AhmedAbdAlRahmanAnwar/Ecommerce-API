@@ -8,7 +8,7 @@ const {isNumeric, isMongoId} = require('validator');
 const Category = require('./../modules/CategoryModule/model/category.model');
 const Product = require('./../modules/ProductModule/model/product.model');
 const asyncHandler = require('express-async-handler');
-
+const errorHandler = require('./../Utilities/errorHandler');
 
 const isCategoryExist = (categoryId) => {
     return Category.findById(categoryId);
@@ -37,25 +37,26 @@ const deleteOldImage = (product, cb) => {
         .catch(() => cb(null, false))
 }
 
-const isProductExists = (productId, cb) => {
+const isProductExists = asyncHandler((productId, cb) => {
     Product.findById(productId)
         .then(product => {
             if (product && product.numberOfSales) {
                 deleteOldImage(product, cb);
-            } else {
-                cb(null, false);
             }
         })
-        .catch(() => cb(null, false))
-}
+        .catch(error => {
+            throw error;
+        })
+})
 
 const fileFilter = asyncHandler(async (req, file, cb) => {
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
+        if ("productId" in req.body){
+            isProductExists(req.body.productId, cb);
+        }
         cb(null, true);
-        // !("productId" in req.body) ? await productValidator(req, file, cb)
-        //     : isProductExists(req.body.productId, cb)
     } else {
         cb(null, false);
     }

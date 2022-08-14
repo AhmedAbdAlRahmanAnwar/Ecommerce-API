@@ -1,6 +1,6 @@
 const Order = require('./../model/order.model');
-const errorHandler = require('./../../../Utilities/errorHandler');
 const Product = require("../../ProductModule/model/product.model");
+const errorHandler = require('./../../../Utilities/errorHandler');
 
 module.exports = (request, response, next) => {
     const {orderId, status} = request.body.payload;

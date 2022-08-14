@@ -8,17 +8,17 @@ const authResetAction = (request, response, next) => {
         const decodedToken = jwt.verify(token, process.env.JWT_Secret);
         User.findById(decodedToken.id).select("-password -resetPasswordToken")
             .then(user => {
-                if (user) {
-                    if (user.email === request.body.payload.email) {
-                        request.user = user;
-                        request.token = token;
-                        next();
-                    } else {
-                        errorHandler("invalid email", 400, next)
-                    }
-                } else {
-                    errorHandler("User Not Found", 404, next)
+                if (!user) {
+                    errorHandler("User Not Found", 404, next);
+                    return;
                 }
+                if (user.email !== request.body.payload.email) {
+                    errorHandler("invalid email", 400, next);
+                    return;
+                }
+                request.user = user;
+                request.token = token;
+                next();
             })
     } catch (error) {
         errorHandler("Not Authenticated", 401, next)
@@ -31,20 +31,20 @@ const authUser = async (request, response, next) => {
         const decodedToken = jwt.verify(token, process.env.JWT_Secret);
         User.findById(decodedToken.id).select("-password -resetPasswordToken")
             .then(user => {
-                if (user) {
-                    if (user.isLoggedIn) {
-                        request.user = user;
-                        request.token = token;
-                        next();
-                    } else {
-                        errorHandler("Not Authorized", 403, next)
-                    }
-                } else {
-                    errorHandler("User Not Found", 404, next)
+                if (!user) {
+                    errorHandler("User Not Found", 404, next);
+                    return;
                 }
+                if (!user.isLoggedIn) {
+                    errorHandler("Not Authorized", 403, next);
+                    return;
+                }
+                request.user = user;
+                request.token = token;
+                next();
             })
     } catch (error) {
-        errorHandler("Not Authenticated", 401, next)
+        errorHandler("Not Authenticated", 401, next);
     }
 }
 

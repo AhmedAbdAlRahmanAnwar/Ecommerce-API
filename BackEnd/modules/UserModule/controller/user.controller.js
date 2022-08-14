@@ -70,7 +70,7 @@ const updateUserInfo = async (request, response, next) => {
         return;
     }
     try {
-        const user = await User.findById(request.user["_id"]);
+        const user = request.user;
         user.firstName = firstName ? firstName : user.firstName;
         user.lastName = lastName ? lastName : user.lastName;
         user.email = newEmail ? newEmail : user.email;

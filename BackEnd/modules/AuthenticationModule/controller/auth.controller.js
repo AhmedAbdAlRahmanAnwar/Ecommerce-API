@@ -13,7 +13,7 @@ const login = function (request, response, next) {
 
         .then(async user => {
             if (user && await (user.matchPassword(password))) {
-                const expire = "1d";
+                const expire = "5h";
                 const token = generateAuthToken(user["_id"], expire);
                 user.isLoggedIn = true;
                 user.save()
@@ -41,7 +41,7 @@ const signup = function (request, response, next) {
         .then(user => {
             if (user) {
                 sendWelcomeMail(user.email);
-                const expire = "1d";
+                const expire = "5h";
                 const token = generateAuthToken(user["_id"], expire)
                 user.isLoggedIn = true;
                 user.save().then(() => {
@@ -64,18 +64,18 @@ const forgetPassword = (request, response, next) => {
     const email = request.body.payload.email;
     User.findOne({email})
         .then(user => {
-            if (user) {
-                const expire = "5m";
-                const forgetPasswordToken = generateAuthToken(user["_id"], expire);
-                sendForgetPasswordEmail(user.email, forgetPasswordToken);
-                user.resetPasswordToken = forgetPasswordToken;
-                user.save();
-                response.status(200).json({message: "Email sent"});
-            } else {
-                errorHandler("User not found", 404, next)
+            if (!user) {
+                errorHandler("User not found", 404, next);
+                return;
             }
+            const expire = "5m";
+            const forgetPasswordToken = generateAuthToken(user["_id"], expire);
+            sendForgetPasswordEmail(user.email, forgetPasswordToken);
+            user.resetPasswordToken = forgetPasswordToken;
+            user.save();
+            response.status(200).json({message: "Email sent"});
         })
-        .catch(error => errorHandler(error, 400, next))
+        .catch(error => errorHandler(error.message, 400, next))
 }
 
 const resetPassword = (request, response, next) => {
@@ -101,13 +101,24 @@ const changePassword = async (request, response, next) => {
             .then(() => response.status(200).json({message: "password updated"}))
             .catch(() => errorHandler("Invalid Password Format", 422, next))
     } else {
-        errorHandler("Invalid Old Password", 400, next)
+        errorHandler("Invalid Old Password", 400, next);
+    }
+}
+
+const logout = (request, response, next) => {
+    try {
+        request.user.isLoggedIn = false;
+        request.user.save();
+        response.status(200).json({message: "logged out successfully"});
+    } catch (error) {
+        errorHandler(error.message, 400, next);
     }
 }
 
 module.exports = {
     login,
     signup,
+    logout,
     forgetPassword,
     resetPassword,
     changePassword
