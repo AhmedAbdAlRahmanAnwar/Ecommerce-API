@@ -32,9 +32,18 @@ const getProductById = (request, response, next) => {
         .catch(() => errorHandler("Not Valid Product ID", 422, next))
 }
 
+const validateProduct = (request, response) => {
+    //If request enters this middleWare , it means product data is valid
+    response.status(200).json({message: "Valid Product Data", productData: request.body.payload})
+}
+
 const createProduct = (request, response, next) => {
     if (request.file) {
         const {name, price, description, modelYear, category, quantity} = request.body;
+        if (!name || !price || !description || !modelYear || !category || !quantity) {
+            errorHandler("Fields Required", 400, next);
+            return;
+        }
         const image = `/${request.file.key}`
         Product.create({name, price, description, modelYear, category, quantity, image})
             .then(product => response.status(201).json({product}))
@@ -265,5 +274,6 @@ module.exports = {
     updateProductDetails,
     updateProductImage,
     deleteProduct,
-    getFilteredProducts
+    getFilteredProducts,
+    validateProduct
 }

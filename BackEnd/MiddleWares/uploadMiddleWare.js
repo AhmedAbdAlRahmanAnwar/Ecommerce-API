@@ -2,59 +2,31 @@ const path = require("path");
 const uuid = require("uuid").v4;
 const multer = require("multer");
 const multerS3 = require("multer-s3");
-const {DeleteObjectCommand} = require("@aws-sdk/client-s3");
 const s3 = require('./../Config/AWS_S3Configuration');
-const {isNumeric, isMongoId} = require('validator');
-const Category = require('./../modules/CategoryModule/model/category.model');
-const Product = require('./../modules/ProductModule/model/product.model');
 const asyncHandler = require('express-async-handler');
-const errorHandler = require('./../Utilities/errorHandler');
+const {DeleteObjectCommand} = require("@aws-sdk/client-s3");
+const Product = require('./../modules/ProductModule/model/product.model');
 
-const isCategoryExist = (categoryId) => {
-    return Category.findById(categoryId);
-}
 
-const productValidator = async (req, file, cb) => {
-    const {name, price, description, category, modelYear, quantity} = req.body;
-
-    if ((!name || isNumeric(name)) ||
-        (!description || isNumeric(description)) ||
-        (!price || !isNumeric(price) || price < 0) ||
-        (!quantity || !isNumeric(quantity) || quantity < 0) ||
-        (modelYear ? (!isNumeric(modelYear) || modelYear < 0) : false) ||
-        (!category || !isMongoId(category) || !await isCategoryExist(category))
-    ) {
-        cb(null, false);
-    } else {
-        cb(null, true);
-    }
-}
-
-const deleteOldImage = (product, cb) => {
+const deleteOldImage = asyncHandler((product, cb) => {
     const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
     s3.send(new DeleteObjectCommand(bucketParams))
         .then(() => cb(null, true))
-        .catch(() => cb(null, false))
-}
+})
 
-const isProductExists = asyncHandler((productId, cb) => {
-    Product.findById(productId)
-        .then(product => {
-            if (product && product.numberOfSales) {
-                deleteOldImage(product, cb);
-            }
-        })
-        .catch(error => {
-            throw error;
-        })
+const checkProductAndDeleteImage = asyncHandler(async (productId, cb) => {
+    const product = await Product.findById(productId);
+    if (product && product?.numberOfSales) deleteOldImage(product, cb);
 })
 
 const fileFilter = asyncHandler(async (req, file, cb) => {
     if (file.mimetype === "image/png" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/jpeg") {
-        if ("productId" in req.body){
-            isProductExists(req.body.productId, cb);
+
+        //In case of update product image, delete old image
+        if ("productId" in req.body) {
+            checkProductAndDeleteImage(req.body.productId, cb);
         }
         cb(null, true);
     } else {
@@ -74,7 +46,7 @@ const storage = multerS3({
     },
 })
 
-const maxSize = 10 * 1000 * 1000;
+const maxSize = 10 * 1000 * 1000;   //10 MegaByte
 const upload = multer({storage, fileFilter, limits: {fileSize: maxSize}})
 
 module.exports = upload;
