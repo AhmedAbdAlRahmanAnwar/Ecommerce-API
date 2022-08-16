@@ -1,38 +1,40 @@
 require('dotenv').config();
 const express = require("express");
-const server = express();
 const cors = require('cors');
 const PORT = process.env.PORT || 3000;
 
-const authRoute = require('./modules/AuthenticationModule/route/auth.route');
+const mongoSanitize = require('express-mongo-sanitize');
+const limiter = require('./MiddleWares/rateLimiter');
+const morganMiddleWare = require('./MiddleWares/morganMiddleWare');
 const userRoute = require('./modules/UserModule/route/user.route');
-const productRoute = require('./modules/ProductModule/route/product.route');
 const orderRoute = require('./modules/OrderModule/route/order.route');
 const reviewRoute = require('./modules/ReviewModule/route/review.route');
+const productRoute = require('./modules/ProductModule/route/product.route');
+const authRoute = require('./modules/AuthenticationModule/route/auth.route');
 const categoryRoute = require('./modules/CategoryModule/route/category.route');
 const errorHandler = require('./MiddleWares/errorMiddleWare');
 const notFound = require('./MiddleWares/notFoundMiddleWare');
 
-/**********************Development packages***************************/
-// const morgan = require('morgan');
+const server = express();
+server.enable('trust proxy');
+server.use(express.json());
+server.use(express.urlencoded({extended: true}));
 
 //1- Connection to DataBase
 require('./Config/dataBaseConnection');
 
 //2- Logging Middleware   /************ Development ***************/
-// server.use(morgan(':url :method'));
+server.use(morganMiddleWare);
 
-//3- CORS Middleware
-// server.use(cors(['https://bazaar-shop-api.herokuapp.com','http://localhost:3000']));
+//3- MongoDB data sanitization
+server.use(mongoSanitize());
+
+//4- CORS Middleware
 server.use(cors());
 
-//4- /************ End Point (Routes) ************/
-server.use(express.json());
-server.use(express.urlencoded({extended: true}));
-
-server.get("/", (req, res) => {
-    res.end();
-})
+//5- /************ End Point (Routes) ************/
+server.use(limiter);
+server.get("/", (req, res) => res.end());
 server.use(authRoute);
 server.use(userRoute);
 server.use(productRoute);
@@ -40,10 +42,10 @@ server.use(orderRoute);
 server.use(reviewRoute);
 server.use(categoryRoute);
 
-//5- Not Found Middleware
+//6- Not Found Middleware
 server.use(notFound);
 
-//6- Error Middleware
+//7- Error Middleware
 server.use(errorHandler);
 
 server.listen(PORT, () => {

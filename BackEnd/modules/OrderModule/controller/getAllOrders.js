@@ -12,5 +12,5 @@ module.exports = async (request, response, next) => {
             numberOfPages,
             orders
         }))
-        .catch(error => errorHandler(error, 400, next))
+        .catch(error => errorHandler(error.message, 400, next))
 }
