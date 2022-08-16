@@ -7,6 +7,7 @@ const getMyOrders = require('./getMyOrders');
 const cancelOrder = require('./cancelOrder');
 const updateStock = require('./updateStock');
 const updateOrderStatus = require('./updateOrderStatus');
+const filterOrders = require('./filterOrders');
 
 module.exports = {
     checkout,
@@ -17,5 +18,6 @@ module.exports = {
     getMyOrders,
     cancelOrder,
     updateStock,
-    updateOrderStatus
+    updateOrderStatus,
+    filterOrders
 }

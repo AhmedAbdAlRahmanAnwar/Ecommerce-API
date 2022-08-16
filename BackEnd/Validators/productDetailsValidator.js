@@ -23,6 +23,7 @@ const validateProductData = [
         .withMessage("invalid modelYear"),
     body("payload.category").isMongoId().withMessage("Invalid Category ID")
         .custom(categoryId => isCategoryExist(categoryId))
+        .withMessage("Category Not Found")
 ]
 
 const validateNewProductData = [
@@ -47,6 +48,7 @@ const validateNewProductData = [
     body("payload.category").optional()
         .isMongoId().withMessage("invalid category")
         .custom(categoryId => isCategoryExist(categoryId))
+        .withMessage("Category Not Found")
 ]
 
 module.exports = {

@@ -163,7 +163,7 @@ const getFilteredProducts = async (request, response, next) => {
         .populate({
             path: "reviews.user",
             select: "firstName lastName -_id"
-        }).sort(sort).limit(pageSize).skip(pageSize * (pageNumber - 1))
+        }).sort(sort).skip(pageSize * (pageNumber - 1)).limit(pageSize)
         .then(products => {
             response.status(200).json({
                 pageNumber,
@@ -171,7 +171,7 @@ const getFilteredProducts = async (request, response, next) => {
                 products
             });
         })
-        .catch(error => errorHandler(error, 400, next))
+        .catch(error => errorHandler(error.message, 400, next))
     /*
     Product.aggregate([
         {
