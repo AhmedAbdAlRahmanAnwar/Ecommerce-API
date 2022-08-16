@@ -6,11 +6,7 @@ const errorHandler = require('./../../../Utilities/errorHandler');
 const login = function (request, response, next) {
     const {email, password} = request.body.payload;
     User.findOne({email})
-        .populate([
-            {path: "wishlist.product", populate: {path: "category", select: "categoryName"}},
-            {path: "wishlist.product", populate: {path: "reviews.user", select: "firstName lastName -_id"}}
-        ])
-
+        .populate({path: "wishlist.product", select:"_id name price rating image"})
         .then(async user => {
             if (user && await (user.matchPassword(password))) {
                 const expire = "5h";
@@ -32,7 +28,7 @@ const login = function (request, response, next) {
                 errorHandler("Invalid email or password", 401, next)
             }
         })
-        .catch(error => errorHandler(error, 400, next))
+        .catch(error => errorHandler(error.message, 400, next))
 }
 
 const signup = function (request, response, next) {

@@ -48,8 +48,8 @@ const transports = [
     }),
     // Allow to print all the error level messages inside the error.log file
     new winston.transports.File({
-        filename: 'logs/error.log',
         level: 'error',
+        filename: 'logs/error.log'
     }),
     // Allow to print all the error message inside the all.log file
     new winston.transports.File({ filename: 'logs/all.log' }),

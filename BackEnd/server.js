@@ -4,6 +4,8 @@ const cors = require('cors');
 const PORT = process.env.PORT || 3000;
 
 const mongoSanitize = require('express-mongo-sanitize');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./Docs/swagger');
 const limiter = require('./MiddleWares/rateLimiter');
 const morganMiddleWare = require('./MiddleWares/morganMiddleWare');
 const userRoute = require('./modules/UserModule/route/user.route');
@@ -32,9 +34,10 @@ server.use(mongoSanitize());
 //4- CORS Middleware
 server.use(cors());
 
-//5- /************ End Point (Routes) ************/
+//5- End Point (Routes)
 server.use(limiter);
 server.get("/", (req, res) => res.end());
+server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 server.use(authRoute);
 server.use(userRoute);
 server.use(productRoute);
