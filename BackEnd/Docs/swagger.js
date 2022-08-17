@@ -1,4 +1,5 @@
 const {login, signUp, logout, forgetPassword, resetPassword, changePassword} = require('./auth.swagger');
+const {getAllUsers, getUserById, deleteUser, makeUserAdmin, updateUser} = require('./user.swagger');
 
 const docs = {
     openapi: '3.0.3',
@@ -54,6 +55,21 @@ const docs = {
         '/changePassword':{
             patch: changePassword
         },
+        '/user':{
+            get: getAllUsers
+        },
+        '/user/:id':{
+            get: getUserById
+        },
+        // '/user/:id':{
+        //     delete: deleteUser
+        // },
+        // '/user':{
+        //     patch: updateUser
+        // },
+        // '/user/addAdmin/:id':{
+        //     patch: makeUserAdmin
+        // },
     }
 }
 

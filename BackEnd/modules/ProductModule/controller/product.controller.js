@@ -12,7 +12,7 @@ const getAllProducts = asyncHandler(async (request, response) => {
     const products = await Product.find()
         .populate({path: "category", select: "categoryName _id"})
         .populate({path: "reviews.user", select: "firstName lastName -_id"})
-        .limit(pageSize).skip(pageSize * (pageNumber - 1));
+        .skip(pageSize * (pageNumber - 1)).limit(pageSize);
 
     if (products) {
         response.status(200).json({

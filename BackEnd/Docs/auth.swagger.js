@@ -1,4 +1,3 @@
-const {authUser} = require("../MiddleWares/authMiddleWare");
 exports.login = {
     security: {
         jwt: []

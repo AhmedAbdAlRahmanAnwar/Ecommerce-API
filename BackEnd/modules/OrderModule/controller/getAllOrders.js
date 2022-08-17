@@ -6,7 +6,7 @@ module.exports = async (request, response, next) => {
     const {pageNumber, pageSize, numberOfPages} = await addPagination(Order,request.query.page);
     Order.find().select("user totalPrice status paymentMethod isDelivered")
         .populate({path: "user", select: "firstName lastName"})
-        .limit(pageSize).skip(pageSize * (pageNumber - 1))
+        .skip(pageSize * (pageNumber - 1)).limit(pageSize)
         .then(orders => response.status(200).json({
             pageNumber,
             numberOfPages,

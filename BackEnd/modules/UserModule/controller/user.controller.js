@@ -3,14 +3,16 @@ const Order = require('./../../OrderModule/model/order.model');
 const errorHandler = require('./../../../Utilities/errorHandler');
 const addPagination = require("../../../Utilities/addPagination");
 
-const getAllUsers = (request, response, next) => {
+const getAllUsers = async (request, response, next) => {
+    const {pageNumber, pageSize, numberOfPages} = await addPagination(User, request.query.page)
     User.find().select("firstName lastName email isAdmin createdAt")
-        .then(users => response.status(200).json({users}))
+        .skip(pageSize * (pageNumber - 1)).limit(pageSize)
+        .then(users => response.status(200).json({pageNumber, numberOfPages, users}))
         .catch(error => errorHandler(error.message, 400, next))
 }
 
 const getUserById = (request, response, next) => {
-    User.findById(request.params.id).select("firstName lastName email isAdmin createdAt updatedAt")
+    User.findById(request.params.id).select("firstName lastName email isAdmin createdAt")
         .then(user => {
             if (!user) {
                 errorHandler("User Not Found", 404, next);
