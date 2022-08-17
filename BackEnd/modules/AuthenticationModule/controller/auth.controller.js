@@ -6,7 +6,7 @@ const errorHandler = require('./../../../Utilities/errorHandler');
 const login = function (request, response, next) {
     const {email, password} = request.body.payload;
     User.findOne({email})
-        .populate({path: "wishlist.product", select:"_id name price rating image"})
+        .populate({path: "wishlist.product", select: "_id name price rating image"})
         .then(async user => {
             if (user && await (user.matchPassword(password))) {
                 const expire = "5h";
@@ -69,35 +69,37 @@ const forgetPassword = (request, response, next) => {
             sendForgetPasswordEmail(user.email, forgetPasswordToken);
             user.resetPasswordToken = forgetPasswordToken;
             user.save();
-            response.status(200).json({message: "Email sent"});
+            response.status(200).json({message: "Email sent successfully"});
         })
         .catch(error => errorHandler(error.message, 400, next))
 }
 
 const resetPassword = (request, response, next) => {
     const user = request.user;
-    if (user.resetPasswordToken === request.token) {
-        user.password = request.body.payload.password;
-        user.resetPasswordToken = undefined;
-        user.save()
-            .then(() => response.status(200).json({message: "success"}))
-            .catch(() => errorHandler("Invalid Password Format", 422, next));
-    } else {
-        errorHandler("Invalid Link", 400, next);
+    if (!request.body.payload.password) {
+        errorHandler("Invalid email or password", 422, next);
+        return;
     }
+    user.password = request.body.payload.password;
+    user.resetPasswordToken = "";
+    user.save()
+        .then(() => response.status(200).json({message: "Password changed successfully."}))
 }
 
 const changePassword = async (request, response, next) => {
     const {oldPassword, newPassword} = request.body.payload;
     const user = request.user;
-
+    if (!oldPassword && !newPassword) {
+        errorHandler("Old and new Passwords are Required", 400, next);
+        return;
+    }
     if (await user.matchPassword(oldPassword)) {
         user.password = newPassword;
         user.save()
-            .then(() => response.status(200).json({message: "password updated"}))
+            .then(() => response.status(200).json({message: "Password updated successfully."}))
             .catch(() => errorHandler("Invalid Password Format", 422, next))
     } else {
-        errorHandler("Invalid Old Password", 400, next);
+        errorHandler("Incorrect Old Password", 400, next);
     }
 }
 

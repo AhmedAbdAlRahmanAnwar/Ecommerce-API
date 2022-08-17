@@ -11,7 +11,7 @@ router.post("/login", validateEmail, validationMW, login);
 router.post("/signup", validateSignupData, validationMW, signup);
 router.post("/logout", authUser, logout);
 router.post("/forgetPassword", validateEmail, validationMW, forgetPassword);
-router.post("/resetPassword", validateEmail, validatePassword, validationMW, authResetAction, resetPassword);
-router.patch("/changePassword", validatePassword, validationMW, authUser, changePassword);
+router.post("/resetPassword", authResetAction, validateEmail, validatePassword, validationMW, resetPassword);
+router.patch("/changePassword", authUser, validatePassword, validationMW, changePassword);
 
 module.exports = router;

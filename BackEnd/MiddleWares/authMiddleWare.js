@@ -6,22 +6,25 @@ const authResetAction = (request, response, next) => {
     try {
         const token = request.header('authorization').split(" ")[1];
         const decodedToken = jwt.verify(token, process.env.JWT_Secret);
-        User.findById(decodedToken.id).select("-password -resetPasswordToken")
+        User.findById(decodedToken.id).select("-password")
             .then(user => {
                 if (!user) {
                     errorHandler("User Not Found", 404, next);
                     return;
                 }
-                if (user.email !== request.body.payload.email) {
-                    errorHandler("invalid email", 400, next);
+                if (user.resetPasswordToken !== token) {
+                    errorHandler("Invalid Link", 400, next);
+                    return;
+                }
+                if (user.email !== request.body.payload?.email) {
+                    errorHandler("Incorrect email", 401, next);
                     return;
                 }
                 request.user = user;
-                request.token = token;
                 next();
             })
     } catch (error) {
-        errorHandler("Not Authenticated", 401, next)
+        errorHandler("Not Authenticated", 401, next);
     }
 }
 

@@ -1,4 +1,4 @@
-const {login} = require('./auth.swagger');
+const {login, signUp, logout, forgetPassword, resetPassword, changePassword} = require('./auth.swagger');
 
 const docs = {
     openapi: '3.0.3',
@@ -32,13 +32,28 @@ const docs = {
             }
         }
     },
-    security: {
-        bearerAuth:[]
-    },
+    security: [{
+        bearerAuth: []
+    }],
     paths: {
-        '/login':{
+        '/login': {
             post: login
-        }
+        },
+        '/signup': {
+            post: signUp
+        },
+        '/logout': {
+            post: logout,
+        },
+        '/forgetPassword':{
+            post: forgetPassword
+        },
+        '/resetPassword':{
+            post: resetPassword
+        },
+        '/changePassword':{
+            patch: changePassword
+        },
     }
 }
 
