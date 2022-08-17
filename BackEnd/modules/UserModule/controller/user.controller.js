@@ -68,7 +68,7 @@ const updateUserInfo = async (request, response, next) => {
     if ((!firstName && !lastName && !newEmail) ||
         (oldEmail && !newEmail) || (!oldEmail && newEmail) ||
         (oldEmail && oldEmail !== request.user.email)) {
-        errorHandler("incorrect data", 400, next);
+        errorHandler("Incorrect data", 400, next);
         return;
     }
     try {

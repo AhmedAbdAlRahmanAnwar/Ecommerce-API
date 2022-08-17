@@ -128,7 +128,7 @@ exports.getUserById = {
                                 type: 'integer',
                                 example: 10
                             },
-                            userOrders:{
+                            userOrders: {
                                 type: 'array',
                                 items: {
                                     type: 'object',
@@ -137,7 +137,7 @@ exports.getUserById = {
                                             type: 'string',
                                             example: '62dc0857859779834b000be3'
                                         },
-                                        products:{
+                                        products: {
                                             type: 'array',
                                             items: {
                                                 type: 'object',
@@ -165,21 +165,21 @@ exports.getUserById = {
                                                 }
                                             }
                                         },
-                                        shippingAddress:{
+                                        shippingAddress: {
                                             type: 'object',
                                             properties: {
-                                                street:{
-                                                    type:'string',
+                                                street: {
+                                                    type: 'string',
                                                 },
-                                                city:{
-                                                    type:'string',
+                                                city: {
+                                                    type: 'string',
                                                 },
-                                                country:{
-                                                    type:'string',
+                                                country: {
+                                                    type: 'string',
                                                 },
-                                                mobile:{
-                                                    type:'string',
-                                                    example:'01236547895'
+                                                mobile: {
+                                                    type: 'string',
+                                                    example: '01236547895'
                                                 },
                                             }
                                         },
@@ -266,14 +266,239 @@ exports.getUserById = {
     }
 }
 
-// exports.deleteUser = {
-//
-// }
+exports.deleteUser = {
+    tags: ['User'],
+    description: 'This route allow only admin to delete user account using it\'s ID',
+    operationId: 'deleteUser',
+    parameters: [{
+        in: 'path',
+        name: 'id',
+        type: 'string',
+        example: '62d97e0d60c1097fefd52162',
+        description: 'UserID'
+    }],
+    responses:{
+        200: {
+            description: 'User account deleted from the database',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'User Deleted Successfully'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            description: 'Provided id is the same id of the admin',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Admin can\'t delete himself'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        404: {
+            description: 'No User Found with the provided id',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'User Not Found'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
-// exports.updateUser = {
-//
-// }
+exports.updateUser = {
+    tags: ['User'],
+    description: 'This route allow user to update only his userName and email',
+    operationId: 'updateUser',
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        payload: {
+                            type: 'object',
+                            properties: {
+                                firstName: {
+                                    type: 'string',
+                                    example: 'admin'
+                                },
+                                lastName: {
+                                    type: 'string',
+                                    example: 'admin'
+                                },
+                                oldEmail: {
+                                    type: 'string',
+                                    required: true,
+                                    example: "john@gmail.com"
+                                },
+                                newEmail: {
+                                    type: 'string',
+                                    required: true,
+                                    example: "john@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    responses:{
+        200: {
+            description: 'Email or UserName has been Updated Successfully',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'User Data Updated Successfully'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            description: 'Required Data is missing or Incorrect user data',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Incorrect data'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        422: {
+            description: 'Validation Error',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message1: {
+                                type: 'string',
+                                example: 'First Name should be a string'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'First Name should has minimum length of 3 characters'
+                            },
+                            message3: {
+                                type: 'string',
+                                example: 'Last Name should be a string'
+                            },
+                            message4: {
+                                type: 'string',
+                                example: 'Last Name should has minimum length of 3 characters'
+                            },
+                            message5: {
+                                type: 'string',
+                                example: 'Invalid email format'
+                            },
+                            message6: {
+                                type: 'string',
+                                example: 'No Data Provided'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
-// exports.makeUserAdmin = {
-//
-// }
+exports.makeUserAdmin = {
+    tags: ['User'],
+    description: 'This route allow only admin to promote another user to be an admin',
+    operationId: 'makeUserAdmin',
+    parameters: [{
+        in: 'path',
+        name: 'id',
+        type: 'string',
+        example: '62d97e0d60c1097fqd52162',
+        description: 'UserID'
+    }],
+    responses:{
+        200: {
+            description: 'User promoted to be an admin',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'User Updated to be Admin'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            description: 'Provided id is not a valid MongoID',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Invalid UserId'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        404: {
+            description: 'No User Found with the provided id',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'User Not Found'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

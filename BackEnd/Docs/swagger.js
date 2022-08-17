@@ -56,20 +56,16 @@ const docs = {
             patch: changePassword
         },
         '/user':{
-            get: getAllUsers
+            get: getAllUsers,
+            patch: updateUser
         },
         '/user/:id':{
-            get: getUserById
+            get: getUserById,
+            delete: deleteUser
         },
-        // '/user/:id':{
-        //     delete: deleteUser
-        // },
-        // '/user':{
-        //     patch: updateUser
-        // },
-        // '/user/addAdmin/:id':{
-        //     patch: makeUserAdmin
-        // },
+        '/user/addAdmin/:id':{
+            patch: makeUserAdmin
+        },
     }
 }
 
