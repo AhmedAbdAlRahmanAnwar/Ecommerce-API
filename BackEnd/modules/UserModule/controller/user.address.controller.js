@@ -17,7 +17,7 @@ const addNewAddress = async (request, response, next) => {
 
     user.address.push(request.body.payload)
     await user.save();
-    response.status(201).json({message: "address added"})
+    response.status(201).json({message: "address added", address: user.address})
 }
 
 const updateAddress = async (request, response, next) => {
@@ -49,7 +49,7 @@ const updateAddress = async (request, response, next) => {
         user.address[addressIndex][update] = request.body.payload[update]
     })
     await user.save();
-    response.status(200).json({message: "address updated"});
+    response.status(200).json({message: "address updated", address: user.address});
 }
 
 const deleteAddress = async (request, response, next) => {
@@ -61,7 +61,7 @@ const deleteAddress = async (request, response, next) => {
     }
     user.address.splice(addressIndex, 1);
     await user.save();
-    response.status(200).json({message: "address deleted"});
+    response.status(200).json({message: "address deleted", address: user.address});
 }
 
 module.exports = {

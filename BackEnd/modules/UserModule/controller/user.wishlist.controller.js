@@ -28,7 +28,7 @@ const addProductToWishlist = async (request, response, next) => {
     }
     user.wishlist.push({product: productId});
     await user.save();
-    response.status(200).json({message: "Product added to wishlist"})
+    response.status(200).json({message: "Product added to wishlist", wishlist: user.wishlist});
 }
 
 const deleteProductFromWishlist = async (request, response, next) => {
@@ -46,7 +46,7 @@ const deleteProductFromWishlist = async (request, response, next) => {
 
     user.wishlist = user.wishlist.filter(item => item.product.toString() !== productId.toString());
     await user.save();
-    response.status(200).json({message: "Product removed from wishlist"});
+    response.status(200).json({message: "Product removed from wishlist", wishlist: user.wishlist});
 }
 
 const clearWishlist = async (request, response) => {
