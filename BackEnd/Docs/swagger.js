@@ -1,5 +1,25 @@
-const {login, signUp, logout, forgetPassword, resetPassword, changePassword} = require('./auth.swagger');
-const {getAllUsers, getUserById, deleteUser, makeUserAdmin, updateUser} = require('./user.swagger');
+const {
+    login,
+    signUp,
+    logout,
+    forgetPassword,
+    resetPassword,
+    changePassword
+} = require('./auth.swagger');
+
+const {
+    getAllUsers,
+    getUserById,
+    deleteUser,
+    makeUserAdmin,
+    updateUser,
+    addNewAddress,
+    updateAddress,
+    deleteAddress,
+    addProductToWishlist,
+    deleteProductFromWishlist,
+    clearWishlist
+} = require('./user.swagger');
 
 const docs = {
     openapi: '3.0.3',
@@ -46,26 +66,40 @@ const docs = {
         '/logout': {
             post: logout,
         },
-        '/forgetPassword':{
+        '/forgetPassword': {
             post: forgetPassword
         },
-        '/resetPassword':{
+        '/resetPassword': {
             post: resetPassword
         },
-        '/changePassword':{
+        '/changePassword': {
             patch: changePassword
         },
-        '/user':{
+        '/user': {
             get: getAllUsers,
             patch: updateUser
         },
-        '/user/:id':{
+        '/user/:id': {
             get: getUserById,
             delete: deleteUser
         },
-        '/user/addAdmin/:id':{
+        '/user/addAdmin/:id': {
             patch: makeUserAdmin
         },
+        '/user/address': {
+            post: addNewAddress,
+            put: updateAddress
+        },
+        '/user/address/:id': {
+            delete: deleteAddress
+        },
+        '/user/wishlist': {
+            put: addProductToWishlist,
+            delete: deleteProductFromWishlist
+        },
+        '/user/wishlist/clear': {
+            delete: clearWishlist
+        }
     }
 }
 

@@ -277,7 +277,7 @@ exports.deleteUser = {
         example: '62d97e0d60c1097fefd52162',
         description: 'UserID'
     }],
-    responses:{
+    responses: {
         200: {
             description: 'User account deleted from the database',
             content: {
@@ -368,7 +368,7 @@ exports.updateUser = {
             }
         }
     },
-    responses:{
+    responses: {
         200: {
             description: 'Email or UserName has been Updated Successfully',
             content: {
@@ -451,7 +451,7 @@ exports.makeUserAdmin = {
         example: '62d97e0d60c1097fqd52162',
         description: 'UserID'
     }],
-    responses:{
+    responses: {
         200: {
             description: 'User promoted to be an admin',
             content: {
@@ -501,4 +501,354 @@ exports.makeUserAdmin = {
             }
         }
     }
+}
+
+exports.addNewAddress = {
+    tags: ['User'],
+    description: 'This route allow user to add new address to his profile',
+    operationId: 'addNewAddress',
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        payload: {
+                            type: 'object',
+                            properties: {
+                                street: {
+                                    type: 'string',
+                                },
+                                city: {
+                                    type: 'string',
+                                },
+                                country: {
+                                    type: 'string',
+                                },
+                                mobile: {
+                                    type: 'string',
+                                    example: '01236547895'
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    responses: {
+        201: {
+            description: 'New Address added to user profile',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'address added'
+                            },
+                            address: {
+                                type: 'array',
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        _id: {
+                                            type: 'integer',
+                                            example: 3
+                                        },
+                                        street: {
+                                            type: 'string',
+                                        },
+                                        city: {
+                                            type: 'string',
+                                        },
+                                        country: {
+                                            type: 'string',
+                                        },
+                                        mobile: {
+                                            type: 'string',
+                                            example: '01236547895'
+                                        },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            description: 'Provided address is already exists',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Address Already exist'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        422: {
+            description: 'Missing required data or invalid data entered',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message1: {
+                                type: 'string',
+                                example: 'No address data provided'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'street should be a string'
+                            },
+                            message3: {
+                                type: 'string',
+                                example: 'city should be a string'
+                            },
+                            message4: {
+                                type: 'string',
+                                example: 'country should be a string'
+                            },
+                            message5: {
+                                type: 'string',
+                                example: 'mobile should be a number'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+exports.updateAddress = {
+    tags: ['User'],
+    description: 'This route allow user to update one of his existing addresses, User can update specific field e.g. street, or any combination of address fields e.g. city and country',
+    operationId: 'updateAddress',
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        addressId: {
+                            type: 'integer',
+                            example: 10
+                        },
+                        payload: {
+                            type: 'object',
+                            properties: {
+                                street: {
+                                    type: 'string',
+                                },
+                                city: {
+                                    type: 'string',
+                                },
+                                country: {
+                                    type: 'string',
+                                },
+                                mobile: {
+                                    type: 'string',
+                                    example: '01236547895'
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    responses: {
+        200: {
+            description: 'User Address updated successfully',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'address updated'
+                            },
+                            address: {
+                                type: 'array',
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        _id: {
+                                            type: 'integer',
+                                            example: 3
+                                        },
+                                        street: {
+                                            type: 'string',
+                                        },
+                                        city: {
+                                            type: 'string',
+                                        },
+                                        country: {
+                                            type: 'string',
+                                        },
+                                        mobile: {
+                                            type: 'string',
+                                            example: '01236547895'
+                                        },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            description: 'Provided address Id doesn\'t exist or unallowed update provided',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message1: {
+                                type: 'string',
+                                example: 'Address id doesn\'t exist'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'Invalid Update!'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        422: {
+            description: 'Missing required data or invalid data entered',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message1: {
+                                type: 'string',
+                                example: 'No Updated Address Data provided'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'Invalid Address ID'
+                            },
+                            message3: {
+                                type: 'string',
+                                example: 'street should be a string'
+                            },
+                            message4: {
+                                type: 'string',
+                                example: 'city should be a string'
+                            },
+                            message5: {
+                                type: 'string',
+                                example: 'country should be a string'
+                            },
+                            message6: {
+                                type: 'string',
+                                example: 'mobile should be a number'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+exports.deleteAddress = {
+    tags: ['User'],
+    description: 'This route allow user to delete one of his addresses',
+    operationId: 'deleteAddress',
+    parameters: [{
+        in: 'path',
+        name: 'id',
+        type: 'integer',
+        example: 3,
+        description: 'AddressID'
+    }],
+    responses: {
+        200: {
+            description: 'Address deleted from user profile',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'address deleted'
+                            },
+                            address: {
+                                type: 'array',
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        _id: {
+                                            type: 'integer',
+                                            example: 3
+                                        },
+                                        street: {
+                                            type: 'string',
+                                        },
+                                        city: {
+                                            type: 'string',
+                                        },
+                                        country: {
+                                            type: 'string',
+                                        },
+                                        mobile: {
+                                            type: 'string',
+                                            example: '01236547895'
+                                        },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            description: 'Provided address Id doesn\'t exists',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Address id doesn\'t exist'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+exports.addProductToWishlist = {
+
+}
+
+exports.deleteProductFromWishlist = {
+
+}
+
+exports.clearWishlist = {
+
 }
