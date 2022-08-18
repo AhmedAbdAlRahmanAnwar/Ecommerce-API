@@ -14,7 +14,7 @@ const {
     updateProductImage,
     deleteProduct,
     getFilteredProducts,
-    validateProduct
+    productDataIsValid
 }
     = require('./../controller/product.controller');
 
@@ -29,7 +29,7 @@ router.post("/product/validateNewProduct",
     isAdmin,
     validateProductData,
     validationMW,
-    validateProduct);
+    productDataIsValid);
 
 router.get("/product/filter", productFilterQueryValidator, validationMW, getFilteredProducts);
 router.get("/product/:id", getProductById);

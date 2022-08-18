@@ -105,7 +105,7 @@ exports.login = {
                                                     example: 121
                                                 },
                                                 rating: {
-                                                    type: 'float',
+                                                    type: 'number',
                                                     example: 3.5
                                                 },
                                                 image: {

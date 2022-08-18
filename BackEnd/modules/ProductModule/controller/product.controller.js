@@ -8,7 +8,7 @@ const addPagination = require("../../../Utilities/addPagination");
 
 
 const getAllProducts = asyncHandler(async (request, response) => {
-    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product, request.query.page)
+    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product, request.query.page);
     const products = await Product.find()
         .populate({path: "category", select: "categoryName _id"})
         .populate({path: "reviews.user", select: "firstName lastName -_id"})
@@ -32,7 +32,7 @@ const getProductById = (request, response, next) => {
         .catch(() => errorHandler("Not Valid Product ID", 422, next))
 }
 
-const validateProduct = (request, response) => {
+const productDataIsValid = (request, response) => {
     //If request enters this middleWare , it means product data is valid
     response.status(200).json({message: "Valid Product Data", productData: request.body.payload})
 }
@@ -47,9 +47,9 @@ const createProduct = (request, response, next) => {
         const image = `/${request.file.key}`
         Product.create({name, price, description, modelYear, category, quantity, image})
             .then(product => response.status(201).json({product}))
-            .catch(error => errorHandler(error, 422, next))
+            .catch(error => errorHandler(error.message, 422, next))
     } else {
-        errorHandler("Invalid Image format , Invalid Data", 422, next)
+        errorHandler("Invalid Image format , Invalid Data", 422, next);
     }
 }
 
@@ -275,5 +275,5 @@ module.exports = {
     updateProductImage,
     deleteProduct,
     getFilteredProducts,
-    validateProduct
+    productDataIsValid
 }
