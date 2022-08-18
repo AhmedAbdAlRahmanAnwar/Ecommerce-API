@@ -944,7 +944,7 @@ exports.deleteProductFromWishlist = {
                 schema: {
                     type: 'object',
                     properties: {
-                        required:false,
+                        required: false,
                         productId: {
                             type: 'string',
                             example: '62e8e1686d0f5a029046fa01'
@@ -955,77 +955,77 @@ exports.deleteProductFromWishlist = {
         }
     },
     responses: {
-        // 200: {
-        //     description: 'Product added to wishlist',
-        //     content: {
-        //         'application/json': {
-        //             schema: {
-        //                 type: 'object',
-        //                 properties: {
-        //                     message: {
-        //                         type: 'string',
-        //                         example: 'Product added to wishlist'
-        //                     },
-        //                     wishlist: {
-        //                         type: 'array',
-        //                         items: {
-        //                             type: 'object',
-        //                             properties: {
-        //                                 product: {
-        //                                     type: 'string',
-        //                                     example: '62e902def69f0a6f79ce5ac0'
-        //                                 },
-        //                             }
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // },
-        // 400: {
-        //     description: 'Missing or Incorrect Data sent by user',
-        //     content: {
-        //         'application/json': {
-        //             schema: {
-        //                 type: 'object',
-        //                 properties: {
-        //                     message1: {
-        //                         type: 'string',
-        //                         example: 'ProductId Required'
-        //                     },
-        //                     message2: {
-        //                         type: 'string',
-        //                         example: 'Invalid Product ID'
-        //                     },
-        //                     message3: {
-        //                         type: 'string',
-        //                         example: 'product already exist in wishlist'
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // },
-        // 404: {
-        //     description: 'The product with the given ID doesn\'t exist',
-        //     content: {
-        //         'application/json': {
-        //             schema: {
-        //                 type: 'object',
-        //                 properties: {
-        //                     message: {
-        //                         type: 'string',
-        //                         example: 'product not found'
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        200: {
+            description: 'Product removed from wishlist',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Product removed from wishlist'
+                            },
+                            wishlist: {
+                                type: 'array',
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        product: {
+                                            type: 'string',
+                                            example: '62e902def69f0a6f79ce5ac0'
+                                        },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            description: 'Missing or Incorrect Data sent by user',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message1: {
+                                type: 'string',
+                                example: 'ProductId Required'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'Invalid Product ID'
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 exports.clearWishlist = {
-
+    tags: ['User'],
+    description: 'This route allow user to remove all products from his wishlist',
+    operationId: 'clearWishlist',
+    responses: {
+        200: {
+            description: 'All products removed from Wishlist',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Wishlist is Cleared'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
