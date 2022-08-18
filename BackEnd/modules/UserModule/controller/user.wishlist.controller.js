@@ -11,7 +11,7 @@ const addProductToWishlist = async (request, response, next) => {
         return;
     }
     if (!isMongoId(productId)) {
-        errorHandler("Invalid Product ID ", 400, next);
+        errorHandler("Invalid Product ID", 400, next);
         return;
     }
 
