@@ -1,6 +1,6 @@
 exports.getAllUsers = {
     tags: ['User'],
-    description: 'This route allow only admin to get all users data',
+    description: 'This route allows only admin to get all users data',
     operationId: 'getAllUsers',
     parameters: [
         {
@@ -65,7 +65,7 @@ exports.getAllUsers = {
 
 exports.getUserById = {
     tags: ['User'],
-    description: 'This route allow only admin to get one user by his id',
+    description: 'This route allows only admin to get one user by his id',
     operationId: 'getUserById',
     parameters: [
         {
@@ -268,7 +268,7 @@ exports.getUserById = {
 
 exports.deleteUser = {
     tags: ['User'],
-    description: 'This route allow only admin to delete user account using it\'s ID',
+    description: 'This route allows only admin to delete user account using it\'s ID',
     operationId: 'deleteUser',
     parameters: [{
         in: 'path',
@@ -331,7 +331,7 @@ exports.deleteUser = {
 
 exports.updateUser = {
     tags: ['User'],
-    description: 'This route allow user to update only his userName and email',
+    description: 'This route allows user to update only his userName and email',
     operationId: 'updateUser',
     requestBody: {
         required: true,
@@ -442,7 +442,7 @@ exports.updateUser = {
 
 exports.makeUserAdmin = {
     tags: ['User'],
-    description: 'This route allow only admin to promote another user to be an admin',
+    description: 'This route allows only admin to promote another user to be an admin',
     operationId: 'makeUserAdmin',
     parameters: [{
         in: 'path',
@@ -505,7 +505,7 @@ exports.makeUserAdmin = {
 
 exports.addNewAddress = {
     tags: ['User'],
-    description: 'This route allow user to add new address to his profile',
+    description: 'This route allows user to add new address to his profile',
     operationId: 'addNewAddress',
     requestBody: {
         required: true,
@@ -632,7 +632,7 @@ exports.addNewAddress = {
 
 exports.updateAddress = {
     tags: ['User'],
-    description: 'This route allow user to update one of his existing addresses, User can update specific field e.g. street, or any combination of address fields e.g. city and country',
+    description: 'This route allows user to update one of his existing addresses, User can update specific field e.g. street, or any combination of address fields e.g. city and country',
     operationId: 'updateAddress',
     requestBody: {
         required: true,
@@ -771,7 +771,7 @@ exports.updateAddress = {
 
 exports.deleteAddress = {
     tags: ['User'],
-    description: 'This route allow user to delete one of his addresses',
+    description: 'This route allows user to delete one of his addresses',
     operationId: 'deleteAddress',
     parameters: [{
         in: 'path',
@@ -843,7 +843,7 @@ exports.deleteAddress = {
 
 exports.addProductToWishlist = {
     tags: ['User'],
-    description: 'This route allow user to add product into his wishlist',
+    description: 'This route allows user to add product into his wishlist',
     operationId: 'addProductToWishlist',
     requestBody: {
         required: true,
@@ -935,7 +935,7 @@ exports.addProductToWishlist = {
 
 exports.deleteProductFromWishlist = {
     tags: ['User'],
-    description: 'This route allow user to remove one product from his wishlist',
+    description: 'This route allows user to remove one product from his wishlist',
     operationId: 'deleteProductFromWishlist',
     requestBody: {
         required: true,
@@ -1008,7 +1008,7 @@ exports.deleteProductFromWishlist = {
 
 exports.clearWishlist = {
     tags: ['User'],
-    description: 'This route allow user to remove all products from his wishlist',
+    description: 'This route allows user to remove all products from his wishlist',
     operationId: 'clearWishlist',
     responses: {
         200: {

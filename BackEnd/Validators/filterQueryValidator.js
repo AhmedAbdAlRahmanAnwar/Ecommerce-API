@@ -1,4 +1,4 @@
-const {query, body} = require('express-validator');
+const {query} = require('express-validator');
 
 const productFilterQueryValidator = [
     query("categoryId").optional().isMongoId().withMessage("Invalid CategoryId"),

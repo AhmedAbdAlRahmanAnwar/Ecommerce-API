@@ -49,7 +49,7 @@ const createProduct = (request, response, next) => {
             .then(product => response.status(201).json({product}))
             .catch(error => errorHandler(error.message, 422, next))
     } else {
-        errorHandler("Invalid Image format , Invalid Data", 422, next);
+        errorHandler("No Image Uploaded with format png, jpg, jpeg", 422, next);
     }
 }
 
@@ -70,7 +70,7 @@ const updateProductImage = (request, response, next) => {
             .then(() => response.status(200).json({message: "product image updated"}))
             .catch(() => errorHandler("Invalid Product Id", 422, next))
     } else {
-        errorHandler("Invalid Update Error", 400, next);
+        errorHandler("No Image Uploaded with format png, jpg, jpeg", 400, next);
     }
 }
 
@@ -81,9 +81,9 @@ const deleteProduct = (request, response, next) => {
                 if (product.numberOfSales) {
                     //Delete from Amazon S3
                     const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
-                    s3.send(new DeleteObjectCommand(bucketParams))
+                    s3.send(new DeleteObjectCommand(bucketParams));
                 }
-                response.status(200).json({message: "product deleted"})
+                response.status(200).json({message: "product deleted"});
             } else {
                 errorHandler("Product Not Found", 404, next);
             }
@@ -107,7 +107,7 @@ const getFilteredProducts = async (request, response, next) => {
     } = request.query;
 
     const match = {}, sort = {_id: 1};
-    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product, page)
+    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product, page);
 
     if (searchKey) match["name"] = {$regex: searchKey, $options: "i"};
     if (rating) match["rating"] = {$gte: parseFloat(rating)};
