@@ -2,6 +2,7 @@ const User = require('./../model/user.model');
 const Order = require('./../../OrderModule/model/order.model');
 const errorHandler = require('./../../../Utilities/errorHandler');
 const addPagination = require("../../../Utilities/addPagination");
+const mongoose = require("mongoose");
 
 const getAllUsers = async (request, response, next) => {
     const {pageNumber, pageSize, numberOfPages} = await addPagination(User, request.query.page)
@@ -22,10 +23,30 @@ const getUserById = (request, response, next) => {
         })
         .then(async user => {
             const {pageNumber, pageSize} = await addPagination(Order, request.query.page)
-            const userOrders = await Order.find({user: request.params.id})
-                .select("-user").limit(pageSize).skip(pageSize * (pageNumber - 1));
-            const numberOfPages = Math.ceil(userOrders["length"] / pageSize) || 1;
-            response.status(200).json({user, userOrders, pageNumber, numberOfPages});
+
+            const userOrders = await Order.aggregate([
+                {
+                    $match: {user: mongoose.Types.ObjectId(request.params.id)}
+                },
+                {
+                    $facet: {
+                        totalCount: [
+                            {$count: 'count'}
+                        ],
+                        result: [
+                            {$skip: pageSize * (pageNumber - 1)}, {$limit: pageSize}
+                        ]
+                    }
+                }
+            ])
+
+            const numberOfPages = Math.ceil((userOrders[0].totalCount[0]?.count || 0) / pageSize) || 1;
+            response.status(200).json({
+                user,
+                pageNumber,
+                numberOfPages,
+                userOrders: userOrders[0].result
+            });
         })
         .catch(error => errorHandler(error.message, 400, next))
 }

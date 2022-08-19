@@ -266,7 +266,111 @@ exports.createProduct = {
     }
 }
 
-exports.updateProductDetails = {}
+exports.updateProductDetails = {
+    tags: ['Product'],
+    description: 'This route allow only admin to update existing product, ' +
+        'allowed updates are name, price, description, category, quantity, modelYear',
+    operationId: 'updateProductDetails',
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        productId: {
+                            type: 'string',
+                            example: '62e8e1686d0f5a029046fa01'
+                        },
+                        payload:{
+                            type: 'object',
+                            properties: {
+                                name: {
+                                    type: 'string',
+                                    example: 'Camera Antique'
+                                },
+                                price: {
+                                    type: 'integer',
+                                    example: 121
+                                },
+                                description: {
+                                    type: 'string',
+                                    example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+                                },
+                                modelYear: {
+                                    type: 'integer',
+                                    example: 1950
+                                },
+                                category: {
+                                    type: 'string',
+                                    example: '62e8e168320f5a0290ghfa01'
+                                },
+                                quantity: {
+                                    type: 'integer',
+                                    example: 7
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    responses:{
+        200: {
+            description: 'Required data or fields are missing',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'product details updated'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {
+            description: 'Required data or fields are missing',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Fields Required'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        422: {
+            description: 'Missing required data or invalid data format entered',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message1: {
+                                type: 'string',
+                                example: 'Invalid Image format , Invalid Data'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'Validation Error Message'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    }
+}
 
 exports.updateProductImage = {}
 

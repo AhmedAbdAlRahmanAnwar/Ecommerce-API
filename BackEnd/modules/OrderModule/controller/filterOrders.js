@@ -69,7 +69,7 @@ module.exports = async (request, response) => {
             }
         }
     ])
-    const numberOfPages = Math.ceil((orders[0].totalCount[0]?.count || 0) / pageSize);
+    const numberOfPages = Math.ceil((orders[0].totalCount[0]?.count || 0) / pageSize) || 1;
     response.status(200).json({
         pageNumber,
         numberOfPages,
