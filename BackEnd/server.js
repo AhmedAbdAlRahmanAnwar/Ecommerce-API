@@ -1,5 +1,7 @@
 require('dotenv').config();
 const express = require("express");
+const path = require('path');
+
 const cors = require('cors');
 const PORT = process.env.PORT || 3000;
 
@@ -38,6 +40,17 @@ server.use(cors());
 server.use(limiter);
 server.get("/", (req, res) => res.end());
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+server.get("/logs",(req,res,next)=>{
+   res.sendFile(path.join(__dirname,'../logs/all.log'),function (err) {
+       if (err) {
+           next(err)
+       } else {
+           console.log('Sent');
+       }
+   });
+});
+
 server.use(authRoute);
 server.use(userRoute);
 server.use(productRoute);
