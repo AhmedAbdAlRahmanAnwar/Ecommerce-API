@@ -42,13 +42,14 @@ server.get("/", (req, res) => res.end());
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 server.get("/logs",(req,res,next)=>{
-   res.sendFile(path.join(__dirname,'../logs/all.log'),function (err) {
-       if (err) {
-           next(err)
-       } else {
-           console.log('Sent');
-       }
-   });
+   // res.sendFile(path.join(__dirname,'../logs/all.log'),function (err) {
+   //     if (err) {
+   //         next(err)
+   //     } else {
+   //         console.log('Sent');
+   //     }
+   // });
+   res.download(path.join(__dirname,'../logs/all.log'))
 });
 
 server.use(authRoute);

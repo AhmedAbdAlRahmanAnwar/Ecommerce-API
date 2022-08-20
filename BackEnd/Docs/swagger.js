@@ -1,3 +1,4 @@
+const {addReview} = require('./review.swagger');
 const {
     login,
     signUp,
@@ -129,6 +130,9 @@ const docs = {
         '/product/validateNewProduct': {
             post: productDataIsValid
         },
+        '/review':{
+            post:addReview
+        }
     }
 }
 

@@ -715,10 +715,6 @@ exports.getProductById = {
                                                 createdAt: {
                                                     type: 'string',
                                                     example: '2022-08-14T00:50:58.879Z'
-                                                },
-                                                updatedAt: {
-                                                    type: 'string',
-                                                    example: '2022-08-14T00:50:58.879Z'
                                                 }
                                             }
                                         }
