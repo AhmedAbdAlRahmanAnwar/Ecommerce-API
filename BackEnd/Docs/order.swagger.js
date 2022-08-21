@@ -310,14 +310,38 @@ exports.updateOrderStatus = {
     operationId: 'createOrder',
 }
 
-exports.getMyOrders = {}
+exports.getMyOrders = {
+    tags: ['Order'],
+    description: 'This route allows logged in user to get all his orders',
+    operationId: 'getMyOrders',
+}
 
-exports.getOrderById = {}
+exports.getOrderById = {
+    tags: ['Order'],
+    description: '',
+    operationId: 'getOrderById',
+}
 
-exports.cancelOrder = {}
+exports.cancelOrder = {
+    tags: ['Order'],
+    description: '',
+    operationId: 'cancelOrder',
+}
 
-exports.filterOrders = {}
+exports.filterOrders = {
+    tags: ['Order'],
+    description: '',
+    operationId: 'filterOrders',
+}
 
-exports.updateStock = {}
+exports.updateStock = {
+    tags: ['Order'],
+    description: '',
+    operationId: 'updateStock',
+}
 
-exports.checkout = {}
+exports.checkout = {
+    tags: ['Order'],
+    description: '',
+    operationId: 'checkout',
+}
