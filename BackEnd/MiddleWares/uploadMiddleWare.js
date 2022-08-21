@@ -14,9 +14,9 @@ const deleteOldImage = asyncHandler((product) => {
         // .then(() => cb(null, true))
 })
 
-const checkProductAndDeleteImage = asyncHandler(async (productId, cb) => {
+const checkProductAndDeleteImage = asyncHandler(async (productId) => {
     const product = await Product.findById(productId);
-    if (product && product?.numberOfSales) deleteOldImage(product, cb);
+    if (product && product?.numberOfSales) deleteOldImage(product);
 })
 
 const fileFilter = asyncHandler(async (req, file, cb) => {
