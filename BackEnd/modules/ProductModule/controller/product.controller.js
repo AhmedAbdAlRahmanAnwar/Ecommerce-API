@@ -256,8 +256,7 @@ const getFilteredProducts = async (request, response, next) => {
             }
         }
     ]).then(data => {
-        console.log(data[0].totalCount[0]?.count)
-        const numberOfPages = Math.ceil((data[0].totalCount[0]?.count || 0) / pageSize);
+        const numberOfPages = Math.ceil((data[0].totalCount[0]?.count || 0) / pageSize) || 1;
         response.status(200).json({
             pageNumber,
             numberOfPages,
