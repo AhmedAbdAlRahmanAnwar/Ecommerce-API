@@ -849,7 +849,7 @@ exports.getFilteredProducts = {
     ],
     responses: {
         200: {
-            description: 'Get all products',
+            description: 'Get filtered products',
             content: {
                 'application/json': {
                     schema: {

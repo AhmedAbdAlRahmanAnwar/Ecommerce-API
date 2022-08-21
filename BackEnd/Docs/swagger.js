@@ -33,6 +33,18 @@ const {
     productDataIsValid
 } = require('./product.swagger');
 
+const {
+    checkout,
+    createOrder,
+    getAllOrders,
+    getOrderById,
+    getMyOrders,
+    cancelOrder,
+    updateStock,
+    updateOrderStatus,
+    filterOrders
+} = require('./order.swagger');
+
 const docs = {
     openapi: '3.0.3',
     info: {
@@ -130,8 +142,29 @@ const docs = {
         '/product/validateNewProduct': {
             post: productDataIsValid
         },
-        '/review':{
-            post:addReview
+        '/order':{
+            get:getAllOrders,
+            post:createOrder,
+            patch:updateOrderStatus
+        },
+        '/order/me':{
+            get:getMyOrders
+        },
+        '/order/:id':{
+            get:getOrderById,
+            patch:cancelOrder
+        },
+        '/order/filter':{
+            get:filterOrders
+        },
+        '/order/success/:id':{
+            get:updateStock
+        },
+        '/create-payment-intent':{
+            post:checkout
+        },
+        '/review': {
+            post: addReview
         }
     }
 }

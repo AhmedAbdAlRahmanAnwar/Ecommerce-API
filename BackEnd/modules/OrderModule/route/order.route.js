@@ -15,8 +15,7 @@ const {
     updateStock,
     updateOrderStatus,
     filterOrders
-}
-    = require('./../controller/index');
+} = require('./../controller/index');
 
 router.route("/order")
     .get(authUser, isAdmin, getAllOrders)

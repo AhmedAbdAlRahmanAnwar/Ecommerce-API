@@ -107,7 +107,7 @@ const getFilteredProducts = async (request, response, next) => {
     } = request.query;
 
     const match = {}, sort = {_id: 1};
-    const {pageNumber, pageSize, numberOfPages} = await addPagination(Product, page);
+    const {pageNumber, pageSize} = await addPagination(Product, page);
 
     if (searchKey) match["name"] = {$regex: searchKey, $options: "i"};
     if (rating) match["rating"] = {$gte: parseFloat(rating)};
@@ -158,21 +158,21 @@ const getFilteredProducts = async (request, response, next) => {
         }
     }
 
-    Product.find(match)
-        .populate({path: "category", select: "categoryName"})
-        .populate({
-            path: "reviews.user",
-            select: "firstName lastName -_id"
-        }).sort(sort).skip(pageSize * (pageNumber - 1)).limit(pageSize)
-        .then(products => {
-            response.status(200).json({
-                pageNumber,
-                numberOfPages,
-                products
-            });
-        })
-        .catch(error => errorHandler(error.message, 400, next))
-    /*
+    // Product.find(match)
+    //     .populate({path: "category", select: "categoryName"})
+    //     .populate({
+    //         path: "reviews.user",
+    //         select: "firstName lastName -_id"
+    //     }).sort(sort).skip(pageSize * (pageNumber - 1)).limit(pageSize)
+    //     .then(products => {
+    //         response.status(200).json({
+    //             pageNumber,
+    //             numberOfPages,
+    //             products
+    //         });
+    //     })
+    //     .catch(error => errorHandler(error.message, 400, next))
+
     Product.aggregate([
         {
             $match: match
@@ -256,6 +256,7 @@ const getFilteredProducts = async (request, response, next) => {
             }
         }
     ]).then(data => {
+        console.log(data[0].totalCount[0]?.count)
         const numberOfPages = Math.ceil((data[0].totalCount[0]?.count || 0) / pageSize);
         response.status(200).json({
             pageNumber,
@@ -263,8 +264,8 @@ const getFilteredProducts = async (request, response, next) => {
             products: data[0].result
         });
     })
-        .catch(error => errorHandler(error, 400, next))
-    */
+        .catch(error => errorHandler(error.message, 400, next))
+
 }
 
 module.exports = {
