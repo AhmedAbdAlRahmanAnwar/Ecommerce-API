@@ -8,10 +8,10 @@ const {DeleteObjectCommand} = require("@aws-sdk/client-s3");
 const Product = require('./../modules/ProductModule/model/product.model');
 
 
-const deleteOldImage = asyncHandler((product, cb) => {
+const deleteOldImage = asyncHandler((product) => {
     const bucketParams = {Bucket: "bazaarshop", Key: product.image.substring(1)};
     s3.send(new DeleteObjectCommand(bucketParams))
-        .then(() => cb(null, true))
+        // .then(() => cb(null, true))
 })
 
 const checkProductAndDeleteImage = asyncHandler(async (productId, cb) => {
@@ -26,7 +26,7 @@ const fileFilter = asyncHandler(async (req, file, cb) => {
 
         //In case of update product image, delete old image
         if ("productId" in req.body) {
-            checkProductAndDeleteImage(req.body.productId, cb);
+            checkProductAndDeleteImage(req.body.productId);
         }
         cb(null, true);
     } else {
