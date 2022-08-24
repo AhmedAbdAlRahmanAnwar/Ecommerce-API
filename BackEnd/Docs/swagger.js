@@ -44,6 +44,13 @@ const {
     filterOrders
 } = require('./order.swagger');
 
+const {
+    getAllCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory
+} = require('./category.swagger');
+
 const docs = {
     openapi: '3.0.3',
     info: {
@@ -161,6 +168,12 @@ const docs = {
         },
         '/review': {
             post: addReview
+        },
+        '/category':{
+            get:getAllCategories,
+            post:createCategory,
+            put:updateCategory,
+            delete:deleteCategory
         }
     }
 }

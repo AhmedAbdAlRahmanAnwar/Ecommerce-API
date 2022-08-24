@@ -11,7 +11,7 @@ const getAllCategories = asyncHandler(async (request, response) => {
     }
 })
 
-const createCategories = asyncHandler(async (request, response) => {
+const createCategory = asyncHandler(async (request, response) => {
     const {categoryName, categoryDescription} = request.body.payload;
     const category = await Category.create({categoryName, categoryDescription})
     if (category) {
@@ -52,7 +52,7 @@ const updateCategory = (request, response, next) => {
 
 module.exports = {
     getAllCategories,
-    createCategories,
+    createCategory,
     updateCategory,
     deleteCategory
 }

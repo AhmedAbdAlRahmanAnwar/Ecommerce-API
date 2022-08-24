@@ -159,7 +159,7 @@ exports.createOrder = {
     },
     responses: {
         201: {
-            description: 'Client error',
+            description: 'Order created successfully',
             content: {
                 'application/json': {
                     schema: {
@@ -270,15 +270,57 @@ exports.createOrder = {
             }
         },
         400: {
-            description: 'Client error',
+            description: 'Client error or missing required data' +
+                ' Note: this route also validate products quantities if it is available in stock and returns' +
+                ' quantityErrors array with the correct quantities',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
-                            message: {
+                            message1: {
                                 type: 'string',
                                 example: 'error message'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'Fields Required'
+                            },
+                            quantityErrors:{
+                                type:'array',
+                                items:{
+                                    type:'object',
+                                    properties:{
+                                        productId: {
+                                            type: 'string',
+                                            example: '62e8e168320f5a0290ghfa01'
+                                        },
+                                        quantity:{
+                                            type: 'integer',
+                                            example: 7
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        404: {
+            description: 'Order doesn\'t contains any product or one of them doesn\'t exist',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message1: {
+                                type: 'string',
+                                example: 'No products found to make an order'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'Product Not Found'
                             }
                         }
                     }
@@ -1111,6 +1153,42 @@ exports.filterOrders = {
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        422: {
+            description: 'Validation Errors on query strings',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message1: {
+                                type: 'string',
+                                example: 'Invalid orderId'
+                            },
+                            message2: {
+                                type: 'string',
+                                example: 'Page must be a number'
+                            },
+                            message3: {
+                                type: 'string',
+                                example: 'Invalid Sort Query, Query must be htl or lth'
+                            },
+                            message4: {
+                                type: 'string',
+                                example: 'Invalid status'
+                            },
+                            message5: {
+                                type: 'string',
+                                example: 'userName should be a string'
+                            },
+                            message6: {
+                                type: 'string',
+                                example: 'userName should has minimum length of 3 characters'
                             }
                         }
                     }
