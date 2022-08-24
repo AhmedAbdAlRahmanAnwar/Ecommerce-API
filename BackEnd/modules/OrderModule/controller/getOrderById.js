@@ -6,5 +6,5 @@ module.exports = (request, response, next) => {
         .then(order => {
             order ? response.status(200).json({order}) : errorHandler("Order Not Found", 404, next)
         })
-        .catch(() => errorHandler("Invalid Id", 422, next))
+        .catch(() => errorHandler("Not Valid Order Id", 422, next))
 }

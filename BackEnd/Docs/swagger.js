@@ -34,7 +34,6 @@ const {
 } = require('./product.swagger');
 
 const {
-    checkout,
     createOrder,
     getAllOrders,
     getOrderById,
@@ -159,9 +158,6 @@ const docs = {
         },
         '/order/success/:id':{
             get:updateStock
-        },
-        '/create-payment-intent':{
-            post:checkout
         },
         '/review': {
             post: addReview

@@ -613,7 +613,7 @@ exports.getProductById = {
     operationId: 'getProductById',
     parameters: [{
         in: 'path',
-        name: 'productId',
+        name: 'id',
         type: 'string',
         example: '62e8e1686d0f5a029046fa01',
         description: 'Product ID'
