@@ -18,10 +18,10 @@
       <a href="#deployment">Deployment</a>
     </li>
     <li>
-      <a href="#key-features">Key Features</a>
+      <a href="#api-usage">API Usage</a>
     </li>
     <li>
-      <a href="#api-usage">API Usage</a>
+      <a href="#key-features">Key Features</a>
     </li>
     <li>
       <a href="#built-with">Built With</a>
@@ -35,6 +35,10 @@
 ## Deployment
 
 Heroku Live Demo :  <a href="https://bazaar-shop-api.herokuapp.com">E-commerce API</a>
+
+## API Usage
+
+Check [API Documentation](https://bazaar-shop-api.herokuapp.com/api-docs/) for more info.
 
 ## Key Features
 
@@ -84,9 +88,6 @@ Heroku Live Demo :  <a href="https://bazaar-shop-api.herokuapp.com">E-commerce A
   * Update Category Details [Admin]
   * Delete Category [Admin]
 
-## API Usage
-
-Check [API Documentation](https://bazaar-shop-api.herokuapp.com/api-docs/) for more info.
 
 ## Built With
 
